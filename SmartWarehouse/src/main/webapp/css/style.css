@@ -127,8 +127,8 @@ select, option{
     background-color:transparent !important;
     color: #000 !important;
 }
-ul > a,li > a{
+/* ul > a,li > a{
     background-color:transparent !important;
     color: #000 !important;
-}
+} */
 

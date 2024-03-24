@@ -442,7 +442,7 @@ response.setDateHeader("Expires", 0);
 <body>
 
     <div id="particles-js" style="position:absolute; top:0; right:0; bottom:0; left:0; z-index:1;"></div>
-<div class="container-fluid" style="position:relative; z-index:2;">
+    <div class="container-fluid" style="position:relative; z-index:2;">
     <div class="row">
         <div class="col-md-12">
             <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color:transparent !important;">
@@ -512,6 +512,9 @@ response.setDateHeader("Expires", 0);
         </div>
     </div>
     <div class="row">
+        
+        
+        
         <div class="col-md-7">
             <div id="map-canvas" style="height: 500px; min-width: 400px; width:100%" class="mt-3">
            </div>

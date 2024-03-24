@@ -1,11 +1,13 @@
 package Enterprise.SmartWarehouse.Product.Repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import Enterprise.SmartWarehouse.Order.Entities.OrderHeader;
 import Enterprise.SmartWarehouse.Product.Entities.Product;
 
 
-public interface ProductRepository extends CrudRepository<Product, Integer>{
+public interface ProductRepository extends JpaRepository<Product, Integer>{
 
 }
 
