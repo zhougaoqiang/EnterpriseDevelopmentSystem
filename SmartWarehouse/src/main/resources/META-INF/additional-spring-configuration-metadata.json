@@ -1,0 +1,37 @@
+{"properties": [
+  {
+    "name": "SmartWarehouseConfig.map-key",
+    "type": "java.lang.String",
+    "description": "A description for 'SmartWarehouseConfig.map-key'"
+  },
+  {
+    "name": "SmartWarehouseConfig.region",
+    "type": "java.lang.String",
+    "description": "A description for 'SmartWarehouseConfig.region'"
+  },
+  {
+    "name": "SmartWarehouseConfig.language",
+    "type": "java.lang.String",
+    "description": "A description for 'SmartWarehouseConfig.language'"
+  },
+  {
+    "name": "SmartWarehouseConfig.version",
+    "type": "java.lang.String",
+    "description": "A description for 'SmartWarehouseConfig.version'"
+  },
+  {
+    "name": "SmartWarehouseConfig.js-a-p-i-url",
+    "type": "java.lang.String",
+    "description": "A description for 'SmartWarehouseConfig.js-a-p-i-url'"
+  },
+  {
+    "name": "SmartWarehouseConfig.distance-matix-url",
+    "type": "java.lang.String",
+    "description": "A description for 'SmartWarehouseConfig.distance-matix-url'"
+  },
+  {
+    "name": "SmartWarehouseConfig.max-d-m-number",
+    "type": "java.lang.String",
+    "description": "A description for 'SmartWarehouseConfig.max-d-m-number'"
+  }
+]}
