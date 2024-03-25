@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import Enterprise.SmartWarehouse.Product.Entities.Product;
 import Enterprise.SmartWarehouse.Product.Repository.ProductRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,11 +26,29 @@ public class ProductController {
 	@Autowired
 	ProductRepository productRepos;
 	
-	@GetMapping
+	@GetMapping // products?page=0&size=10
 	public Page<Product> getAllProducts(Pageable pageable){
         return productRepos.findAll(pageable);
 	}
 
+	@PostMapping("/stockin")
+	public boolean stockIn(@RequestBody List<Product> products)
+	{
+		for(Product product : products)
+		{
+			Optional<Product> productOpt = productRepos.findById(product.getId());
+		    if (! productOpt.isPresent())
+		    {
+		    	return false;
+		    }
+		    
+		    Product pd = productOpt.get();
+		    pd.setQuantity(pd.getQuantity() + product.getQuantity());
+		    productRepos.saveAndFlush(pd);
+		}
+		return true;
+	}
+	
 	@PostMapping
 	public Product createProduct(@RequestBody Product product)
 	{
@@ -46,14 +65,17 @@ public class ProductController {
 }
 		 */
 		
-//		System.out.println("gaoqiang receive product");
+		System.out.println("receive product");
+		System.out.println(product.getType());
 		return productRepos.saveAndFlush(product);
 	}
 
 	@DeleteMapping
 	public void deleteProduct(@RequestBody Product product)
 	{
-		productRepos.delete(product);
+		System.out.println("receive delete product");
+		System.out.println(product.getId());
+		productRepos.deleteById(product.getId());
 	}
 	
 	@PutMapping
@@ -73,6 +95,8 @@ public class ProductController {
 	
 	@GetMapping("/exist-{id}")
 	public boolean isExist(@PathVariable("id") Integer id) {
+		System.out.println("receive check product");
+		System.out.println(id);
 		return productRepos.existsById(id);
 	}
 	
