@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import Enterprise.SmartWarehouse.Order.Repository.*;
+import Enterprise.SmartWarehouse.Order.Service.OrderService;
 import Enterprise.SmartWarehouse.Product.Entities.Product;
 import Enterprise.SmartWarehouse.Order.Entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,14 +26,12 @@ import java.util.Optional;
 @RequestMapping("/orders")
 public class OrderController {
 	@Autowired
-	OrderHeaderRepository headerRepos;
-	@Autowired
-	OrderItemRepository itemRepos;
+	OrderService service;
 	
 	
 	@GetMapping    // orders?page=0&size=10
 	public Iterable<OrderHeader> getAllOrders(Pageable pageable){
-		return headerRepos.findAll(pageable);
+		return service.getAllOrders(pageable);
 	}
 
 	/*
@@ -69,50 +70,42 @@ public class OrderController {
 	@PostMapping
 	public Order createOrder(@RequestBody Order order)
 	{
-		try {
-	        OrderHeader savedHeader = headerRepos.save(order.getOrderHeader());
-	        for (OrderItem item : order.getOrderItems()) {
-	            item.setOrderHeader(savedHeader);
-	        }
-	        itemRepos.saveAll(order.getOrderItems());
-	        order.setOrderHeader(savedHeader);
-
-	        return order;
-		} catch (Exception e) {
-			throw new RuntimeException("Error creating order: " + e.getMessage(), e);
-		}
+		return service.createOrder(order);
 	}
 	
 	@PutMapping
-	public Order updateOrder(@RequestBody Order order){
-		try {
-	        OrderHeader savedHeader = headerRepos.save(order.getOrderHeader());
-	        for (OrderItem item : order.getOrderItems()) {
-	            item.setOrderHeader(savedHeader);
-	        }
-	        itemRepos.saveAll(order.getOrderItems());
-	        order.setOrderHeader(savedHeader);
-	        return order;
-		} catch (Exception e) {
-			throw new RuntimeException("Error creating order: " + e.getMessage(), e);
-		}
+	public Order updateOrder(@RequestBody Order order)
+	{
+		return service.updateOrder(order);
 	}
 
 	@GetMapping("/{id}")
-	public Optional<Order> getOrder(@PathVariable("id") Integer id) {
-		Optional<OrderHeader> orderHeaderOpt = headerRepos.findById(id);
-        if (!orderHeaderOpt.isPresent()) {
-            return Optional.empty();
-        }
-
-        OrderHeader orderHeader = orderHeaderOpt.get();
-        // The jpa will auto generate this function ?
-        List<OrderItem> orderItems = itemRepos.findByOrderHeaderId(orderHeader.getId());
-
-        Order order = new Order();
-        order.setOrderHeader(orderHeader);
-        order.setOrderItems(orderItems);
-
-        return Optional.of(order);
+	public Optional<Order> getOrder(@PathVariable("id") Integer id)
+	{
+		return service.getOrder(id);
+	}
+	
+	@GetMapping("/exist-{id}")
+	public boolean isExist(@PathVariable("id") Integer id) {
+		System.out.println(id);
+		return service.isExist(id);
+	}
+	
+	@GetMapping("/count")
+	public long count()
+	{
+		return service.count();
+	}
+	
+	@GetMapping("/pages")
+	public long pages()
+	{
+		return service.totalPages();
+	}
+	
+	@GetMapping("/generateOrderId")
+	public long getOrderId()
+	{
+		return service.getOrderId();
 	}
 }

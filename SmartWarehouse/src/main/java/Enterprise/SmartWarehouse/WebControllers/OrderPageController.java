@@ -1,13 +1,16 @@
 package Enterprise.SmartWarehouse.WebControllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import Enterprise.SmartWarehouse.Product.Service.ProductService;
 
+import Enterprise.SmartWarehouse.Order.Service.OrderService;
+
+@Controller
 public class OrderPageController {
 	@Autowired
-	ProductService service;
+	OrderService service;
 	
     @GetMapping("/Order")
     public String order(Model model) {
@@ -21,7 +24,8 @@ public class OrderPageController {
     
     @GetMapping("/Order/NewOrder")
     public String newOrder(Model model) {
-    	
+    	System.out.println("new order");
+    	model.addAttribute("newOrderId", service.getOrderId());
         return "orderneworder";
     }
 }

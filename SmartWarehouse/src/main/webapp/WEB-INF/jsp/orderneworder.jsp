@@ -19,126 +19,170 @@
         color: #cccccc; /* 鼠标悬停时的颜色变化 */
     }
 </style>
-
-<script type="text/javascript">
-
-	var isExist = false;
-	function checkIfExist(id) {
-		  let urlExist = "http://localhost:8080/products/exist-" + id;
-    	  var xmlhttp;
-     	  if(window.XMLHttpRequest)
-    			xmlhttp = new XMLHttpRequest();
-    	  else
-    			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    		
-    	  xmlhttp.onreadystatechange=function()
-    	  {
-    		  console.log("xmlhttp.readyState = " + xmlhttp.readyState);
-    		  console.log("xmlhttp.responseText=" + xmlhttp.responseText);
-    		  console.log("xmlhttp.responseURL=" + xmlhttp.responseURL);
-    		  console.log("xmlhttp.status=" + xmlhttp.status);
-    		  
-    		  // way 1
-    		  if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
-    		  {
-    			  if (xmlhttp.responseText == "true")
-    				  isExist = true;
-    			  else
-    				  isExist = false;
-    		  }
-    	   }
-    	   xmlhttp.open("GET", urlExist, false);
-    	   xmlhttp.send();
-	}
-	
-	function createProduct(event) {
-		  event.preventDefault(); // Prevent default form submission
-		// Get form data
-		  var id = document.getElementById("id").value;
-		  var name = document.getElementById("name").value;
-		  var type = document.getElementById("type").value;
-		  var price = document.getElementById("price").value;
-		  var quantity = document.getElementById("quantity").value;
-		  var symbol = document.getElementById("symbol").value;
-
-		  let res = checkIfExist(id);
-		  if(isExist == true)
-		 {
-		      $('#errorModal').modal('show');
-		      $('#errorMessage').text("Duplicate ID");
-		      return false;
-	      }
-		  var productData = {
-		    id: id,
-		    name: name,
-		    type: type,
-		    price: price,
-		    quantity: quantity,
-		    symbol: symbol
-		  };
-		console.log(JSON.stringify(productData));
-		  // Send POST request with product data (assuming jQuery is included)
-		  $.ajax({
-		    url: "http://localhost:8080/products",
-		    type: "POST",
-		    data: JSON.stringify(productData),
-		    contentType: "application/json; charset=utf-8",
-		    success: function(response) {
-		      $('#successModal').modal('show'); 
-		      $('#successMessage').text("Create product success");
-		    },
-		    error: function(jqXHR, textStatus, errorThrown) {
-		      var errorMessage = jqXHR.responseJSON ? jqXHR.responseJSON.message : "An error occurred while creating the product.";
-		      $('#errorModal').modal('show');
-		      $('#errorMessage').text(errorMessage);
-		    }
-		  });
-}
-</script>
 </head>
 <body>
 <div class="container-fluid" style="position:relative;">
 <%@ include file="menu.jsp" %>
 
-<div class="row" id="newProduct">
-<div class="col-md-4"></div>
-<div class="col-md-4 mx-auto">
-	<h2>Create New Product</h2>
-    <form onsubmit="createProduct(event)">
-      <div class="form-group">
-        <label for="id">ID:</label>
-        <input type="number" class="form-control" id="id" name="id" placeholder="Enter ID (if applicable)" min="1" max="999">
-      </div>
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="Enter product name">
-      </div>
-      <div class="form-group">
-        <label for="type">Type:</label>
-        <select class="form-control" id="type" name="type">
-          <option value="NonWeight">NonWeight</option>
-          <option value="Weight">Weight</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="price">Price (*100):</label>
-        <input type="number" class="form-control" id="price" name="price" placeholder="Enter price" min="1" max="99999999">
-      </div>
-      <div class="form-group">
-        <label for="quantity">Quantity:</label>
-        <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity" min="1" max="99999999">
-      </div>
-      <div class="form-group">
-        <label for="symbol">Symbol:</label>
-        <input type="text" class="form-control" id="symbol" name="symbol" placeholder="Enter symbol">
-      </div>
- 	 <button type="submit" class="btn btn-primary">Create</button>
-    </form>
+    
+<div class="row" id="stockin">
+	<div class="col-md-1"></div>
+	<div class="col-md-10 mx-auto">
+	<h3>New Order : ${newOrderId}</h3>
+	<table class="table table-striped mt-2">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Unit Price</th>
+        <th>Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+   </tbody>
+  </table>
 </div>
-<div class="col-md-4"></div>
+	<div class="col-md-1"></div>
+</div>
+<button type="button" class="btn btn-primary" id="addRowBtn" style="float: right;">Add Product</button>
+    
+
 </div>
     
-</div>
+<script type="text/javascript">
+var addRowBtn = document.getElementById("addRowBtn");
+
+function submitStockIn()
+{
+	let tableBody = document.getElementById("stockin").getElementsByTagName("tbody")[0];
+	  let productList = []; // Array to store product data
+
+	  // Loop through all rows in the table body
+	  for (let i = 0; i < tableBody.rows.length; i++)
+	  {
+	    let row = tableBody.rows[i];
+	    let cells = row.cells;
+
+	    // Extract data from each cell, assuming the ID is in the first cell, name in the second, and quantity in the third
+	    let id = cells[0].querySelector('input').value; // Assuming input fields are within cells
+	    let name = cells[1].querySelector('input').value;
+	    let quantity = cells[2].querySelector('input').value;
+	    
+	    if(name == "Product not found" || name == "Error fetching name")
+	    	continue;
+	    
+	    if (isNaN(quantity) || typeof quantity === "undefined")
+	    {
+	    	  $('#errorModal').modal('show');
+	    	  $('#errorMessage').text("Invalid quantity. Please enter a number.");
+	    	  return;
+	    }
+
+	    // Create a product object with extracted data
+	    let product = {
+	      id: id,
+	      name: name,
+	      type: "NonWeight", // uselesss no need is server
+	      price: "0", // uselesss
+	      quantity: quantity,
+	      symbol: "JJ" //uselesss
+	    };
+
+	    // Add the product object to the list
+	    productList.push(product);
+	  }
+
+	  // Send the product list to the server for update (replace with your actual server-side logic)
+	  fetch('http://localhost:8080/products/stockin', {
+	    method: 'POST', // Specify POST for updates
+	    headers: {
+	      'Content-Type': 'application/json' // Set content type for JSON data
+	    },
+	    body: JSON.stringify(productList) // Convert product list to JSON string
+	  })
+	  .then(response => {
+	    if (response.ok) {
+	      console.log("Stock updated successfully");
+	      $('#successModal').modal('show'); 
+	      $('#successMessage').text("Stock updated successfully");
+	      // if ok, clear table
+	       tableBody.innerHTML="";
+	    } else {
+	      console.error("Error updating stock:", response.statusText);
+	      $('#errorModal').modal('show');
+	      $('#errorMessage').text(response.statusText);
+	    }
+	  })
+	  .catch(error => {
+	    console.error("Error sending request:", error);
+	      $('#errorModal').modal('show');
+	      $('#errorMessage').text(error);
+	  });
+}
+
+function deleteStockInRow(obj)
+{
+    console.log(parseInt(obj.children[0].innerText));
+    var tableBody = document.getElementById("stockin").getElementsByTagName("tbody")[0];
+    tableBody.removeChild(obj);
+}
+
+addRowBtn.addEventListener("click", function() {
+  let tableBody = document.getElementById("stockin").getElementsByTagName("tbody")[0];
+  let newRow = tableBody.insertRow();
+
+  // Create cells for ID, Name (readonly), and Quantity
+  let cell1 = newRow.insertCell();
+  let cell2 = newRow.insertCell();
+  let cell3 = newRow.insertCell();
+  
+  
+  let deleteCell = newRow.insertCell();   // Add a new cell for the "Delete" button
+  deleteCell.classList.add("text-center"); // Optional: Center the button
+  let deleteButton = document.createElement("button");
+  deleteButton.classList.add("btn", "btn-danger", "btn-sm"); // Bootstrap classes for button style
+  deleteButton.textContent = "Delete";
+  deleteButton.addEventListener("click", function() {
+	  deleteStockInRow(newRow);	});
+  // Add the button to the delete cell
+  deleteCell.appendChild(deleteButton);
+
+  // Add input field for ID with event listener for automatic lookup
+  cell1.innerHTML = '<input type="number" class="form-control id-input" placeholder="Enter ID">';
+  var idInput = cell1.querySelector('.id-input'); // Cache reference to input field
+  idInput.addEventListener('keyup', function(event) {
+	  console.log('keyup');
+	  console.log(event.keyCode);
+     {
+      let url = 'http://localhost:8080/products/get-' + idInput.value;
+      console.log(url);
+      fetch( url, {
+		    method: 'GET',
+		    headers: {
+		        'Content-Type': 'application/json'
+		    },
+		})
+        .then(response => response.json())
+        .then(data => {
+         console.log(data.name)
+          if (data.name) {
+            cell2.innerHTML = '<input type="text" class="form-control" value="' + data.name + '" readonly>';
+          } else {
+            cell2.innerHTML = '<input type="text" class="form-control" value="Product not found" readonly>';
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching product name:", error);
+          cell2.innerHTML = '<input type="text" class="form-control" value="Error fetching name" readonly>';
+        });
+    }
+  });
+
+  // Add input field for quantity
+  cell3.innerHTML = '<input type="number" class="form-control" value="1" min="1" max="9999999">';
+});
+</script>
 <%@ include file="modal.jsp" %>
 </body>
 </html>

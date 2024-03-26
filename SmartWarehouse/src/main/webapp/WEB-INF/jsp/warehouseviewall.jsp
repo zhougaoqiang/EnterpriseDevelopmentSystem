@@ -176,7 +176,7 @@
 
 <div class="col-md-1"></div>
 <div class="col-md-10 mx-auto">
-<h2>View All</h2>
+<h3>View All</h3>
 <table class="table table-striped mt-3">
     <thead>
       <tr>

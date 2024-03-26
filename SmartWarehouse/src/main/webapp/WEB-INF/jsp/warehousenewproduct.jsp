@@ -103,7 +103,7 @@
 <div class="row" id="newProduct">
 <div class="col-md-4"></div>
 <div class="col-md-4 mx-auto">
-	<h2>Create New Product</h2>
+	<h3>Create New Product</h3>
     <form onsubmit="createProduct(event)">
       <div class="form-group">
         <label for="id">ID:</label>

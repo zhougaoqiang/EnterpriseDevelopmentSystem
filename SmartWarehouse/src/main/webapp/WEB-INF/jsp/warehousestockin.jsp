@@ -28,7 +28,7 @@
 <div class="row" id="stockin">
 	<div class="col-md-2"></div>
 	<div class="col-md-8 mx-auto">
-	<h2>Stock In</h2>
+	<h3>Stock In</h3>
 	<button type="button" class="btn btn-primary" onclick="submitStockIn()">Stock In</button>
 	<table class="table table-striped mt-2">
     <thead>
