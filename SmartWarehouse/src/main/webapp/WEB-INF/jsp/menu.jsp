@@ -23,7 +23,7 @@
                     			Orders
                				</a>
                 			<div class="dropdown-menu" aria-labelledby="orderDropdownMenuLink">
-                    			<a class="dropdown-item" href="/Order">View All</a>
+                    			<a class="dropdown-item" href="/Order/ViewAll">View All</a>
                     			<a class="dropdown-item" href="/Order/NewOrder">New Order</a>
                 			</div>
                         </li>
@@ -50,6 +50,5 @@
             </nav>
         </div>
     </div>
-</div>
 
 <!-- end menu -->

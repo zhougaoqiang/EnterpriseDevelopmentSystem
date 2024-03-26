@@ -10,7 +10,18 @@ public class OrderPageController {
 	ProductService service;
 	
     @GetMapping("/Order")
-    public String hello(Model model) {
-        return "order";  // here return warehouse.jsp
+    public String order(Model model) {
+        return "orderviewall";  // here return warehouse.jsp
+    }
+    
+    @GetMapping("/Order/ViewAll")
+    public String viewallorder(Model model) {
+        return "orderviewall";  // here return warehouse.jsp
+    }
+    
+    @GetMapping("/Order/NewOrder")
+    public String newOrder(Model model) {
+    	
+        return "orderneworder";
     }
 }
