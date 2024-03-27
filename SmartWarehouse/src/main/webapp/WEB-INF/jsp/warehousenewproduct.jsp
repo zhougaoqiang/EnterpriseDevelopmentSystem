@@ -121,7 +121,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="price">Price (*100):</label>
+        <label for="price">Price (cent):</label>
         <input type="number" class="form-control" id="price" name="price" placeholder="Enter price" min="1" max="99999999">
       </div>
       <div class="form-group">

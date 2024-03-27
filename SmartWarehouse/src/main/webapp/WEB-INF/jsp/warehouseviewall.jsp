@@ -183,7 +183,7 @@
         <th>ID</th>
         <th>Name</th>
         <th>Type</th>
-        <th>Price</th>
+        <th>Price(cent)</th>
         <th>Quantity</th>
         <th>Symbol</th>
         <th></th>

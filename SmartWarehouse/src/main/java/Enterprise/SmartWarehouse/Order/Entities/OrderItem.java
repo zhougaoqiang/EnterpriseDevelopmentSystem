@@ -70,6 +70,11 @@ public class OrderItem {
 	public void setTotalPrice(Integer totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "OrderItem [itemId=" + itemId + ", orderHeader=" + orderHeader + ", price=" + price + ", quantity="
+				+ quantity + ", symbol=" + symbol + ", totalPrice=" + totalPrice + "]";
+	}
 	
 }

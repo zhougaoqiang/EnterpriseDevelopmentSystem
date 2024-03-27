@@ -24,6 +24,7 @@ public class OrderHeader {
 	@Column(name = "delivery_status")
 	private EDeliveryStatus deliveryStatus;
 	private String datetime;
+	private String address;
 	private double longitude;
 	private double latitude;
 	
@@ -70,13 +71,14 @@ public class OrderHeader {
 		this.latitude = latitude;
 	}
 	public OrderHeader(Integer id, Integer nominalPrice, Integer actualPrice, EDeliveryStatus deliveryStatus,
-			String datetime, double longitude, double latitude) {
+			String datetime, String add, double longitude, double latitude) {
 		super();
 		this.id = id;
 		this.nominalPrice = nominalPrice;
 		this.actualPrice = actualPrice;
 		this.deliveryStatus = deliveryStatus;
 		this.datetime = datetime;
+		this.address = add;
 		this.longitude = longitude;
 		this.latitude = latitude;
 	}
@@ -85,4 +87,17 @@ public class OrderHeader {
 	{
 		
 	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	@Override
+	public String toString() {
+		return "OrderHeader [id=" + id + ", nominalPrice=" + nominalPrice + ", actualPrice=" + actualPrice
+				+ ", deliveryStatus=" + deliveryStatus + ", datetime=" + datetime + ", address=" + address
+				+ ", longitude=" + longitude + ", latitude=" + latitude + "]";
+	}
+	
 }

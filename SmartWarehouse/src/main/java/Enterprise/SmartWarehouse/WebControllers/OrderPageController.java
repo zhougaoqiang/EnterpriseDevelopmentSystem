@@ -6,11 +6,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import Enterprise.SmartWarehouse.Order.Service.OrderService;
+import Enterprise.SmartWarehouse.Properties.SmartWarehouseService;
 
 @Controller
 public class OrderPageController {
 	@Autowired
 	OrderService service;
+	
+	@Autowired
+	SmartWarehouseService propertyService;
 	
     @GetMapping("/Order")
     public String order(Model model) {
@@ -25,7 +29,9 @@ public class OrderPageController {
     @GetMapping("/Order/NewOrder")
     public String newOrder(Model model) {
     	System.out.println("new order");
+    	
     	model.addAttribute("newOrderId", service.getOrderId());
+    	model.addAttribute("apiKey", propertyService.getMapKey());
         return "orderneworder";
     }
 }

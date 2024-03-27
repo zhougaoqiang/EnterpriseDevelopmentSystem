@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import Enterprise.SmartWarehouse.Order.Repository.*;
 import Enterprise.SmartWarehouse.Order.Service.OrderService;
 import Enterprise.SmartWarehouse.Product.Entities.Product;
+import Enterprise.SmartWarehouse.Product.Service.ProductService;
 import Enterprise.SmartWarehouse.Order.Entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +29,8 @@ import java.util.Optional;
 public class OrderController {
 	@Autowired
 	OrderService service;
+	@Autowired
+	ProductService productService;
 	
 	
 	@GetMapping    // orders?page=0&size=10
@@ -70,6 +74,7 @@ public class OrderController {
 	@PostMapping
 	public Order createOrder(@RequestBody Order order)
 	{
+		System.out.println("Create order => " + order.toString());
 		return service.createOrder(order);
 	}
 	
@@ -77,6 +82,12 @@ public class OrderController {
 	public Order updateOrder(@RequestBody Order order)
 	{
 		return service.updateOrder(order);
+	}
+	
+	@GetMapping("/product-{id}")
+	public ResponseEntity<Product> getProduct(@PathVariable("id") Integer id)
+	{
+		return productService.getProduct(id);
 	}
 
 	@GetMapping("/{id}")
