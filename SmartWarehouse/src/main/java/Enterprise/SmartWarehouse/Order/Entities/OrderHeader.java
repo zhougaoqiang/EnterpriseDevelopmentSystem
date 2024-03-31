@@ -2,6 +2,8 @@ package Enterprise.SmartWarehouse.Order.Entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -21,6 +23,7 @@ public class OrderHeader {
 	private Integer nominalPrice;
 	@Column(name = "actual_price")
 	private Integer actualPrice;
+
 	@Column(name = "delivery_status")
 	private EDeliveryStatus deliveryStatus;
 	private String datetime;

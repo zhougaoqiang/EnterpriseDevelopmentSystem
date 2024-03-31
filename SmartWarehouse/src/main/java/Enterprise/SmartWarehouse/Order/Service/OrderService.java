@@ -6,12 +6,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import Enterprise.SmartWarehouse.Order.Entities.Order;
 import Enterprise.SmartWarehouse.Order.Entities.OrderHeader;
 import Enterprise.SmartWarehouse.Order.Entities.OrderItem;
 import Enterprise.SmartWarehouse.Order.Repository.OrderHeaderRepository;
 import Enterprise.SmartWarehouse.Order.Repository.OrderItemRepository;
+import Enterprise.SmartWarehouse.Order.Entities.OrderHeader.EDeliveryStatus;
+import Enterprise.SmartWarehouse.Order.Entities.OrderHeaderSpecification;
 
 @Service
 public class OrderService {
@@ -23,8 +26,20 @@ public class OrderService {
 	final public int maxShowInOnePage = 10;
 	
 	
-	public Iterable<OrderHeader> getAllOrders(Pageable pageable){
+	public Iterable<OrderHeader> getAllOrders(Pageable pageable)
+	{
 		return headerRepos.findAll(pageable);
+	}
+	
+	public Iterable<OrderHeader> getAllOrdersByStatus(EDeliveryStatus status)
+	{
+		Specification<OrderHeader> spec = OrderHeaderSpecification.hasStatus(status);
+		Iterable<OrderHeader> tmp = headerRepos.findAll(spec);
+		for(OrderHeader oh : tmp)
+		{
+			System.out.println(oh.toString());
+		}
+		return tmp;
 	}
 	
 	public Order createOrder(Order order)

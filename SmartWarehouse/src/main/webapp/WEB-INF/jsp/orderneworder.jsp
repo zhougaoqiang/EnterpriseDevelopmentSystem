@@ -114,14 +114,12 @@ function submitNewOrder()
 	let np = parseInt(document.getElementById("totalPriceInput").value);
 	let ap = parseInt(document.getElementById("actualPriceInput").value);
 	const now = new Date();
-	const utcString = now.toLocaleTimeString();
-	console.log(utcString); // Output: Fri, 24 Mar 2024 12:23:37 G
 	let orderHeader = {
 			id: parseInt(orderID), 
 			nominalPrice: np,
 			actualPrice: ap,
 			deliveryStatus: "Pending",
-			datetime: utcString,
+			datetime: now.toISOString(),
 			address: document.getElementById('addressInput').value,
 			longitude: currentLocation.lng,
 			latitude: currentLocation.lat

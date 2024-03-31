@@ -2,9 +2,11 @@ package Enterprise.SmartWarehouse.Order.Repository;
 //import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import Enterprise.SmartWarehouse.Order.Entities.OrderHeader;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 
-public interface OrderHeaderRepository extends JpaRepository<OrderHeader, Integer>{
+public interface OrderHeaderRepository extends JpaRepository<OrderHeader, Integer>, JpaSpecificationExecutor<OrderHeader> 
+{
 
 }
 
@@ -20,7 +22,7 @@ CREATE TABLE `order_header` (
   `nominal_price` INT NOT NULL,
   `actual_price` INT NOT NULL,
   `delivery_status` INT NOT NULL,
-  `datetime` VARCHAR(20) NOT NULL,
+  `datetime` VARCHAR(50) NOT NULL,
   `address` VARCHAR(200) NOT NULL,
   `longitude` DOUBLE NOT NULL,
   `latitude` DOUBLE NOT NULL,

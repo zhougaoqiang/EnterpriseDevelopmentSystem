@@ -16,6 +16,8 @@ import Enterprise.SmartWarehouse.Order.Service.OrderService;
 import Enterprise.SmartWarehouse.Product.Entities.Product;
 import Enterprise.SmartWarehouse.Product.Service.ProductService;
 import Enterprise.SmartWarehouse.Order.Entities.*;
+import Enterprise.SmartWarehouse.Order.Entities.OrderHeader.EDeliveryStatus;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -118,5 +120,32 @@ public class OrderController {
 	public long getOrderId()
 	{
 		return service.getOrderId();
+	}
+	
+	@GetMapping("/fetch")
+	public Iterable<OrderHeader> getAllOrdersByStatus(@RequestParam(value = "status", required = false) Integer status)
+	{
+	    EDeliveryStatus sts;
+
+        switch (status) {
+            case 0:
+                sts = EDeliveryStatus.Pending;
+                break;
+            case 1:
+                sts = EDeliveryStatus.InProgress;
+                break;
+            case 2:
+                sts = EDeliveryStatus.Shipped;
+                break;
+            case 3:
+                sts = EDeliveryStatus.Abandoned;
+                break;
+            default:
+                // Handle unexpected status values appropriately
+                sts = EDeliveryStatus.Pending; // Assuming there is an 'Unknown' status in EDeliveryStatus
+                break;
+	    }
+		
+		return service.getAllOrdersByStatus(sts);
 	}
 }

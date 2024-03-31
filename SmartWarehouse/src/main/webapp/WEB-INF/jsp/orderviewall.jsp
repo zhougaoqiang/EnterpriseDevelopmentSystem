@@ -30,8 +30,6 @@
 </style>
 
 <script type="text/javascript">
-
-	var isExist = false;
 	var wTotalPages = ${totalPages};
 	var wCurrentPage = 1;
 	
@@ -46,14 +44,15 @@
 	
 	function viewAll()
 	{
-		fetchProducts(0);
+		fetchOrders(0);
+		fetchPages();
 		updatePageIndicator();
 	}
 
 
 	function fetchPages() {
-		let pUrl= "http://localhost:8080/products/pages";
-		console.log(pUrl)
+		let pUrl= "http://localhost:8080/orders/pages";
+		console.log(pUrl);
 		  $.ajax({
 		    url: pUrl,
 		    type: "GET", // Use GET for fetching data
@@ -66,16 +65,16 @@
 		  });
 		}
 	
-	function fetchProducts(pageNumber) {
-		let pUrl= "http://localhost:8080/products?page="+pageNumber + "&size=10";
-		console.log(pUrl)
+	function fetchOrders(pageNumber) {
+		let pUrl= "http://localhost:8080/orders?page="+pageNumber + "&size=10";
+		console.log(pUrl);
 		  $.ajax({
 		    url: pUrl,
 		    type: "GET", // Use GET for fetching data
 		    dataType: "json", // Expect JSON response
 		    success: function(data) {
 		    	console.log(data.content);
-		      updateProductTable(data.content); // Call function to update the table with fetched data
+		    	allOrderTable(data.content); // Call function to update the table with fetched data
 		    },
 		    error: function(jqXHR, textStatus, errorThrown) {
 		      console.error("Error fetching products:", textStatus, errorThrown);
@@ -84,65 +83,73 @@
 		  });
 		}
 	
-    function deleteRow(obj) {
-        console.log(parseInt(obj.children[0].innerText));
-        deleteProduct(parseInt(obj.children[0].innerText))
-        var tableBody = document.getElementById("allProducts").getElementsByTagName("tbody")[0];
-        tableBody.removeChild(obj);
-     }
-	
-	function deleteProduct(id){
-		
-		  var productData = {
-				    id:id,
-				    name:"anyname",
-				    type: "NonWeight",
-				    price: 0,
-				    quantity: 0,
-				    symbol: "any-symbol"
-				  };
-		console.log(JSON.stringify(productData));
-		
+	function fetchOrdersByStatus(status){
+		let pUrl= "http://localhost:8080/orders/fetch?status="+status;
+		console.log(pUrl);
 		  $.ajax({
-			    url: "http://localhost:8080/products",
-			    type: "DELETE",
-			    dataType: "json",
-			    data: JSON.stringify(productData),
-			    contentType: "application/json; charset=utf-8",
-			  });
+			    url: pUrl,
+			    type: "GET", // Use GET for fetching data
+			    dataType: "json", // Expect JSON response
+			    success: function(data) {
+			    	console.log(data);
+			    	if (status == 0)
+			    		statusOrderTable(data, true);
+			    	else
+			    		statusOrderTable(data, false);
+			    },
+			    error: function(jqXHR, textStatus, errorThrown) {
+			      console.error("Error fetching products:", textStatus, errorThrown);
+			      // Handle errors appropriately (e.g., display an error message to the user)
+			    }
+		});
+	}
+	
+	function statusOrderTable(orders, isPending) {
+		  var tableBody = document.getElementById("allOrders").getElementsByTagName("tbody")[0];
+		  tableBody.innerHTML = ""; // Clear existing table content
+	      
+		  for (var i = 0; i < orders.length; i++) {
+		    let order = orders[i];
+		    let row = tableBody.insertRow();
+		    row.insertCell().innerHTML = order.id;
+		    row.insertCell().innerHTML = order.address;
+		    row.insertCell().innerHTML = order.nominalPrice;
+		    row.insertCell().innerHTML = order.actualPrice;
+		    row.insertCell().innerHTML = order.datetime;
+		    row.insertCell().innerHTML = order.deliveryStatus;
+		    
+	        // Add a checkbox in the last cell
+	        let checkboxCell = row.insertCell();
+	        let checkbox = document.createElement('input');
+	        checkbox.type = 'checkbox';
+	        checkbox.value = order.id; // You can set the value to order.id or any other unique identifier
+	        checkboxCell.appendChild(checkbox);
+		  }
+		  
+		  if (isPending == true)
+			  showDeliveryButton();
+		  else
+			  hideDeliveryButton();
 	}
 
-		function updateProductTable(products) {
-		  var tableBody = document.getElementById("allProducts").getElementsByTagName("tbody")[0];
-		  tableBody.innerHTML = ""; // Clear existing table content
-
-		  for (var i = 0; i < products.length; i++) {
-		    let product = products[i];
-		    let row = tableBody.insertRow();
-		    row.insertCell().innerHTML = product.id;
-		    row.insertCell().innerHTML = product.name;
-		    row.insertCell().innerHTML = product.type;
-		    row.insertCell().innerHTML = product.price;
-		    row.insertCell().innerHTML = product.quantity;
-		    row.insertCell().innerHTML = product.symbol;
-		    
-		    let deleteCell = row.insertCell();   // Add a new cell for the "Delete" button
-		    deleteCell.classList.add("text-center"); // Optional: Center the button
-
-		    // Create a button element with appropriate styling and functionality
-		    let deleteButton = document.createElement("button");
-		    deleteButton.classList.add("btn", "btn-danger", "btn-sm"); // Bootstrap classes for button style
-		    deleteButton.textContent = "Delete";
-
-		    // Add an event listener to handle the delete action (implementation details omitted)
-			deleteButton.addEventListener("click", function() {
-				deleteRow(row);	
-			});
-
-		    // Add the button to the delete cell
-		    deleteCell.appendChild(deleteButton);
-		  }
-		}
+	function allOrderTable(orders) {
+	  var tableBody = document.getElementById("allOrders").getElementsByTagName("tbody")[0];
+	  tableBody.innerHTML = ""; // Clear existing table content
+      
+	  for (var i = 0; i < orders.length; i++) {
+	    let order = orders[i];
+	    let row = tableBody.insertRow();
+	    row.insertCell().innerHTML = order.id;
+	    row.insertCell().innerHTML = order.address;
+	    row.insertCell().innerHTML = order.nominalPrice;
+	    row.insertCell().innerHTML = order.actualPrice;
+	    row.insertCell().innerHTML = order.datetime;
+	    row.insertCell().innerHTML = order.deliveryStatus;
+	  }
+	  hideDeliveryButton();
+	}
+		
+		
 	function onPrevButtonClicked()
 	{
 		if (wCurrentPage == 1)
@@ -162,6 +169,82 @@
 		updatePageIndicator();
 	}
 	
+	function handleStatusChange()
+	{
+	    let selectElement = document.getElementById('statusSelection');
+	    let selectedValue = selectElement.value;
+
+	    console.log('Selected status:', selectedValue);
+	    if (selectedValue == "0")
+	    {
+	    	viewAll();
+	    	showPageIndicator();
+	   	}
+	    else
+	    {
+		    let val = parseInt(selectedValue) -1;
+		    fetchOrdersByStatus(val);
+		    hidePageIndicator();
+	    }
+
+	}
+	
+	function hidePageIndicator()
+	{
+		let pageIndicator = document.getElementById("pageIndicator");
+		pageIndicator.style.visibility = "hidden";
+	}
+	
+	function showPageIndicator()
+	{
+		let pageIndicator = document.getElementById("pageIndicator");
+		pageIndicator.style.visibility = "visible";
+		fetchPages();
+		updatePageIndicator();
+	}
+	
+	function hideDeliveryButton()
+	{
+		let deliveryBtn = document.getElementById("deliveryBtn");
+		deliveryBtn.style.visibility = "hidden";
+	}
+	
+	function showDeliveryButton()
+	{
+		let deliveryBtn = document.getElementById("deliveryBtn");
+		deliveryBtn.style.visibility = "visible";
+	}
+	
+	function onDelivery()
+	{
+	    var tableBody = document.getElementById("allOrders").getElementsByTagName("tbody")[0];
+	    var checkboxes = tableBody.querySelectorAll('input[type="checkbox"]');
+	    var selectedOrderIds = [];
+
+	    checkboxes.forEach(function(checkbox) {
+	        if (checkbox.checked) {
+	            selectedOrderIds.push(checkbox.value);
+	        }
+	    });
+
+	    console.log(selectedOrderIds);
+	    
+	    fetch('/your-server-endpoint', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/json',
+	        },
+	        body: JSON.stringify({ orderIds: selectedOrderIds })
+	    })
+	    .then(response => response.json())
+	    .then(data => {
+	        console.log('Success:', data);
+	    })
+	    .catch((error) => {
+	        console.error('Error:', error);
+	    });
+	}
+	
 	$(document).ready(function() {
 			viewAll();
 		});
@@ -171,21 +254,35 @@
 <body>
 <div class="container-fluid" style="position:relative;">
 <%@ include file="menu.jsp" %>
+<div class="row mt-1">
+	<div class="col-md-1"></div>
+	<div class="col-md-2"><h3>View All</h3></div>
+	<div class="col-md-6"></div>
+	<div class="col-md-2">
+        <select class="form-control" id="statusSelection" name="status" onchange="handleStatusChange()">
+        	<option value="0">All</option>
+          	<option value="1">Pending</option>
+          	<option value="2">In Progress</option>
+          	<option value="3">Shipped</option>
+          	<option value="4">Abandoned</option>
+        </select>
+	</div>
+	<div class="col-md-1"></div>
+</div>
 
-<div class="row" id="allProducts">
+<div class="row" id="allOrders">
 
 <div class="col-md-1"></div>
 <div class="col-md-10 mx-auto">
-<h3>View All</h3>
-<table class="table table-striped mt-3">
+<table class="table table-striped mt-1">
     <thead>
       <tr>
         <th>ID</th>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Price(cent)</th>
-        <th>Quantity</th>
-        <th>Symbol</th>
+        <th>Address</th>
+        <th>Nominal Price</th>
+        <th>Actual Price</th>
+        <th>Date Time</th>
+        <th>Delivery Status</th>
         <th></th>
       </tr>
     </thead>
@@ -195,20 +292,28 @@
 </div>
 <div class="col-md-1"></div>
 </div>
-    <div class="row mt-3">
+    <div class="row mt-1" id="pageIndicator">
         <div class="col-md-9 col-lg-9"></div>
         <div class="col-md-3 col-lg-3">
-            <ul class="pagination pagination-sm">
+            <ul class="pagination pagination-sm" >
             <li class="page-item"><a class="page-link" href="#" onclick="onPrevButtonClicked()">Prev</a></li>
-            <li class="page-item"><a class="page-link" id="displayPage">
+            <li class="page-item">
+            <a class="page-link" id="displayPage">
                 <script> updatePageIndicator()</script>
-                </a>
+            </a>
             </li>
             <li class="page-item"><a class="page-link" href="#" onclick="onNextButtonClicked()">Next</a></li>
             </ul>
         </div>
     </div>
-</div>
+
+   <div class="row" id="deliveryBtn">
+        <div class="col-md-10 col-lg-10"></div>
+        <div class="col-md-2 col-lg-2">
+        	<button type="button" class="btn btn-primary" onclick="onDelivery()">Delivery</button>
+        </div>
+    </div>
+   </div> 
 
 <%@ include file="modal.jsp" %>
 </body>

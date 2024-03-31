@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS `task_header`;
 
 CREATE TABLE `task_header` (
   `id` INT,
-  `datetime` VARCHAR(20) NOT NULL,
+  `datetime` VARCHAR(50) NOT NULL,
   `title` VARCHAR(100) NOT NULL,
   `status` INT NOT NULL,
   `decision` INT NOT NULL,
