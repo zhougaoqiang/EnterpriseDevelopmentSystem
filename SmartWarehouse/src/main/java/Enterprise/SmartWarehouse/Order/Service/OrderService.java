@@ -1,6 +1,7 @@
 package Enterprise.SmartWarehouse.Order.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,6 +90,41 @@ public class OrderService {
         return Optional.of(order);
 	}
 	
+	public Optional<OrderHeader> getOrderHeader(Integer id) {
+		Optional<OrderHeader> orderHeaderOpt = headerRepos.findById(id);
+        if (!orderHeaderOpt.isPresent()) {
+            return Optional.empty();
+        }
+
+        return orderHeaderOpt;
+	}
+	
+	public ArrayList<OrderHeader> getOrdersByIdList(Iterable<Integer> ids)
+	{
+		ArrayList<OrderHeader> ordersList = new ArrayList<>();
+		for(Integer id : ids)
+		{
+			Optional<OrderHeader> orderHeaderOpt = headerRepos.findById(id);
+	        if (!orderHeaderOpt.isPresent())
+	            continue;
+	        
+	        ordersList.add(orderHeaderOpt.get());
+		}
+		return ordersList;
+	}
+	
+	public void saveOrdersStatus(Iterable<Integer> ids, EDeliveryStatus status)
+	{
+		for(Integer id : ids)
+		{
+			Optional<OrderHeader> orderHeaderOpt = headerRepos.findById(id);
+	        if (!orderHeaderOpt.isPresent())
+	            continue;
+	        
+	        orderHeaderOpt.get().setDeliveryStatus(status);
+	        headerRepos.save(orderHeaderOpt.get());
+		}
+	}
 	
 	public boolean isExist(Integer id) {
 		return headerRepos.existsById(id);

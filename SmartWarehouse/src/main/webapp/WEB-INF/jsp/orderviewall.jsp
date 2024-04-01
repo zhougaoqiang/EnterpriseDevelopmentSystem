@@ -223,13 +223,14 @@
 
 	    checkboxes.forEach(function(checkbox) {
 	        if (checkbox.checked) {
-	            selectedOrderIds.push(checkbox.value);
+	            selectedOrderIds.push(parseInt(checkbox.value));
 	        }
 	    });
 
 	    console.log(selectedOrderIds);
+	    console.log(JSON.stringify({ orderIds: selectedOrderIds }));
 	    
-	    fetch('/your-server-endpoint', {
+	    fetch('http://localhost:8080/Task/NewTask', {
 	        method: 'POST',
 	        headers: {
 	            'Content-Type': 'application/json',

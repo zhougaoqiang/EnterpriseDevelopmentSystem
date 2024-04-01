@@ -12,21 +12,25 @@ public class TaskHeader {
 	
 	@Id
 	private Integer id;
-	private String datetime;
 	private String title;
 	private EDeliveryStatus status;
 	private TspDecision decision;
+	
+	@Column(name = "need_return")
+	private int needReturn;
+	
+	
+	public int getNeedReturn() {
+		return needReturn;
+	}
+	public void setNeedReturn(int needReturn) {
+		this.needReturn = needReturn;
+	}
 	public Integer getId() {
 		return id;
 	}
 	public void setId(Integer id) {
 		this.id = id;
-	}
-	public String getDatetime() {
-		return datetime;
-	}
-	public void setDatetime(String datetime) {
-		this.datetime = datetime;
 	}
 	public String getTitle() {
 		return title;

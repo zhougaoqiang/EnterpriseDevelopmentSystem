@@ -280,9 +280,9 @@ response.setDateHeader("Expires", 0);
                 	addResponse(result[0].geometry.location, postalCodeList[i]);
                 }
             });
-        }
-    }
+        }    }
     
+
     function openFile(event) {
          let input = event.target;
          let reader = new FileReader();

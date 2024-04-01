@@ -98,6 +98,13 @@ public class OrderController {
 		return service.getOrder(id);
 	}
 	
+	@GetMapping("/orderheader-{id}")
+	public Optional<OrderHeader> getOrderHeader(@PathVariable("id") Integer id)
+	{
+		System.out.println("receive id " + id);
+		return service.getOrderHeader(id);
+	}
+	
 	@GetMapping("/exist-{id}")
 	public boolean isExist(@PathVariable("id") Integer id) {
 		System.out.println(id);
