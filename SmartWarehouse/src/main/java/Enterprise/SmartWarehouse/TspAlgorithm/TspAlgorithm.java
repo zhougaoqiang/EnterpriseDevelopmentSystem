@@ -4,6 +4,7 @@ package Enterprise.SmartWarehouse.TspAlgorithm;
 import java.util.*;
 import Enterprise.SmartWarehouse.Definitions.*;
 import Enterprise.SmartWarehouse.DeliveryTask.Entities.*;
+import Enterprise.SmartWarehouse.Order.Entities.OrderHeader.EDeliveryStatus;
 
 //Tsp is stand for travelling salesman problem
 public abstract class TspAlgorithm
@@ -24,6 +25,7 @@ public abstract class TspAlgorithm
     public final void setOriginalInfo(TaskHeader info, List<SubTask> pointList)
     {
         m_taskInfo = info;
+        m_taskInfo.setStatus(EDeliveryStatus.InProgress);
         m_oriPointList = pointList;
         m_cityNum = m_oriPointList.size();
     }
@@ -39,7 +41,11 @@ public abstract class TspAlgorithm
             for (int i = 0; i < m_cityNum; ++i)
             {
                 int seq = m_bestTour[i];
-                m_updatePointList.add(m_oriPointList.get(seq));
+                SubTask sub = m_oriPointList.get(seq);
+                sub.setSequence(seq);
+                System.out.println("subtask id =>"+sub.getOrderId() + ", seq = " + seq);
+                sub.setStatus(EDeliveryStatus.InProgress);
+                m_updatePointList.add(sub);
             }
         }
         catch (Exception e)

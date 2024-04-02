@@ -1,10 +1,13 @@
 package Enterprise.SmartWarehouse.DeliveryTask.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
 import Enterprise.SmartWarehouse.DeliveryTask.Entities.TaskHeader;
 //import Enterprise.SmartWarehouse.DeliveryTask.Entities.TaskHeader.TspDecision;
 //import Enterprise.SmartWarehouse.Order.Entities.OrderHeader.EDeliveryStatus;
 
-public interface TaskHeaderRepository extends JpaRepository<TaskHeader, Integer>{
+public interface TaskHeaderRepository extends JpaRepository<TaskHeader, Integer>, JpaSpecificationExecutor<TaskHeader> 
+{
 
 }
 

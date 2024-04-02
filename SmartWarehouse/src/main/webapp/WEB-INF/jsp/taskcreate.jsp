@@ -268,7 +268,7 @@
 	}
    
     function sendDataToServer(){
-    	  if(index < 4)
+    	  if(index < 2)
     	  {
     	    alert("Please select more locations!");
     	    return;
@@ -287,10 +287,15 @@
     	  else
     		  rb = 0;
     	  let algo = document.getElementById("TspAlgorithms").value;
+    	  
+    	  const now = new Date();
+    	  const timestampInSeconds = Math.floor(now.getTime() / 1000);
+    	  
+    	  
     	  var markerTbl = document.getElementById("MarkerTable");
     	  sendMarkers.push({
-    		  orderId : 0,
-    		  address: "not saved",
+    		  orderId : timestampInSeconds,
+    		  address: startAddress,
     		  status: "Pending",
     		  sequence: 0,
     	      longitude : startLocation.lng(),
@@ -312,8 +317,7 @@
     	  
     	  async = false;
     	  
-    	  const now = new Date();
-    	  const timestampInSeconds = Math.floor(now.getTime() / 1000);
+
     	  let header = {
     			  id: timestampInSeconds,
     			  title: title,

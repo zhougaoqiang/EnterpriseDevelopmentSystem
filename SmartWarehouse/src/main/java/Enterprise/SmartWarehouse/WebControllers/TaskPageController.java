@@ -3,6 +3,7 @@ package Enterprise.SmartWarehouse.WebControllers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import Enterprise.SmartWarehouse.DeliveryTask.Entities.Task;
 import Enterprise.SmartWarehouse.DeliveryTask.Service.DeliveryTaskService;
@@ -26,7 +28,13 @@ public class TaskPageController {
 	
 	@GetMapping("/Task/NewTask")
 	public String newTask(Model model) {
-        return "NewTask";
+        return "taskcreate";
+    }
+	
+	@GetMapping("/Task/ViewAll")
+	public String viewAll(Model model) {
+		model.addAttribute("totalPages", taskService.totalPages());
+        return "tasklist";
     }
 	
     @PostMapping("/Task/NewTask")
@@ -34,6 +42,14 @@ public class TaskPageController {
     	ArrayList<OrderHeader> oHs = orderService.getOrdersByIdList(newTask.getOrderIds());
     	model.addAttribute("subTasksCount", oHs.size());
     	model.addAttribute("orderHeaders", oHs);
-        return "NewTask";
+        return "taskcreate";
     }
+    
+    @GetMapping("Task/MapView")
+    public String mapView(Model model, @RequestParam(value = "id", required = true) Integer id) {
+    	System.out.println("receive id = " + id);
+    	model.addAttribute("taskId", id);
+    	return "mapview";
+    }
+    
 }

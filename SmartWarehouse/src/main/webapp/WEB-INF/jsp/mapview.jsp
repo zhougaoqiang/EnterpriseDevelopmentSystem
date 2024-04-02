@@ -1,6 +1,3 @@
-<%@page import="Database.TaskInfo"%>
-<%@page import="Database.PointInfo"%>
-<%@page import="Database.DBTask"%>
 <%@page import="java.util.ArrayList"%>
 <%@page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -44,28 +41,8 @@
            height: 100%;
          }
     </style>
-    <script type="module" src="./index.js"></script>
-    
     <script>
-    <%
-    String UID = (String)request.getSession().getAttribute("UID");
-    String Date = (String)request.getSession().getAttribute("Date");
-    String TaskTitle = (String)request.getSession().getAttribute("TaskTitle");
-    String NeedReturn = (String)request.getSession().getAttribute("NeedReturn");
-    if(UID == null || UID.isEmpty() || Date == null || Date.isEmpty() || TaskTitle == null || TaskTitle.isEmpty())
-    {
-        response.sendRedirect("Login.jsp");
-    }
-    response.addHeader("Pragma", "no-cache");
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    response.setDateHeader("Expires", 0);
-    %>
-    
-    <%
-         String donwloadFilename = Date + "-" + TaskTitle +".png";
-         out.println("var filename=\"" + donwloadFilename + "\"");
-    %>
-    
+    var taskId = ${taskId};
     function createScreenshotControl(map) {
     	  const controlButton = document.createElement('button');
 
@@ -124,57 +101,92 @@
               displayRoute(
               directionsService,
               directionsRenderer);
-              
-              // Create the DIV to hold the control.
-/*               const screenshotDiv = document.createElement('div');
-              // Create the control.
-              const screenshotControl = createScreenshotControl(map);
-              // Append the control to the DIV.
-              screenshotDiv.appendChild(screenshotControl);
+   } 
 
-              map.controls[google.maps.ControlPosition.TOP_CENTER].push(screenshotDiv); */
-   }   
+    async function displayRoute(service, display) {
+    	  try {
+    	    let url = "http://localhost:8080/delivery/taskId-" + taskId;
+    	    console.log(url);
+    	    const response = await fetch(url);
+    	    if (!response.ok) {
+    	      throw new Error(`Error fetching task data: ${response.statusText}`);
+    	    }
 
-    function displayRoute(service, display) {
-      service
-        .route({
-        	<%
-        	System.out.println(UID + " " + Date + " "+ TaskTitle);
-        	ArrayList<PointInfo> pointList = DBTask.getInstance().fetchTaskPointList(UID,Date,TaskTitle);
-        	int size = pointList.size();
-        	if (0 == NeedReturn.compareToIgnoreCase("Yes"))
-        	{
-                PointInfo OriginPoint = pointList.get(0);
-                PointInfo DestinationPoint = OriginPoint;
-                out.println("origin:new google.maps.LatLng("+ OriginPoint.getLatitudeWithOffset()+","+OriginPoint.getLongitudeWithOffset()+"),");
-                out.println("destination:new google.maps.LatLng("+DestinationPoint.getLatitude()+","+DestinationPoint.getLongitude()+"),");
-        	}
-        	else
-        	{
-                PointInfo OriginPoint = pointList.get(0);
-                PointInfo DestinationPoint = pointList.get(size - 1);
-                out.println("origin:new google.maps.LatLng("+ OriginPoint.getLatitude()+","+OriginPoint.getLongitude()+"),");
-                out.println("destination:new google.maps.LatLng("+DestinationPoint.getLatitude()+","+DestinationPoint.getLongitude()+"),");
-        	} 
-        	%>
-          waypoints: [
-        	  <%
-        	  for (int i = 1; i < size - 1; ++i)
-        	  {
-        	      out.println("{location:new google.maps.LatLng(" + pointList.get(i).getLatitude() +","+pointList.get(i).getLongitude()+")},");
-        	  }
-        	  %>
-          ],
-          travelMode: google.maps.TravelMode.DRIVING,
-          avoidTolls: true,
-        })
-        .then((result) => {
-          display.setDirections(result);
-        })
-        .catch((e) => {
-          alert("Could not display directions due to: " + e);
-        });
-    }
+    	    const taskData = await response.json();
+    	    console.log(taskData); // Check data structure
+
+    	    let origin = new google.maps.LatLng(taskData[0].latitude, taskData[0].longitude);
+    	    let destination = new google.maps.LatLng(taskData[taskData.length - 1].latitude, taskData[taskData.length - 1].longitude);
+    	    let waypts = [];
+ 
+    	    taskData.splice(0, 1);
+    	    taskData.pop();
+    	    
+    	    for (const subTask of taskData) {
+    	   	  console.log("latitude", subTask.latitude);
+    	   	  console.log("longitude", subTask.longitude);
+    	   		console.log("address", subTask.address);
+    	   		waypts.push({
+    	   	        location: new google.maps.LatLng(subTask.latitude, subTask.longitude),
+    	   	        stopover: true,
+    	   	      });
+    	    }
+    	    service.route({
+    	        origin: origin,
+    	        destination: destination,
+    	        waypoints: waypts,
+    	        travelMode: google.maps.TravelMode.DRIVING,
+    	        avoidTolls: true,
+    	      })
+    	      .then((result) => {
+    	        display.setDirections(result);
+    	      })
+    	      .catch((error) => {
+    	        console.error("Error fetching task data:", error);
+    	      });
+    	  } catch (error) {
+    	    console.error("Error fetching task data:", error);
+    	  }
+    	}
+
+    
+    async function displayRoute111(service, display) {
+    	  try {
+    		  let url = "http://localhost:8080/delivery/taskId-" + ${taskId};
+    	    const response = await fetch(url);
+    	    if (!response.ok) {
+    	      throw new Error(`Error fetching task data: ${response.statusText}`);
+    	    }
+
+    	    const taskData = await response.json();
+    	    console.log(taskData);
+    	    let tLen = taskData.length;
+    	    let origin = new google.maps.LatLng(taskData[0].latitude, taskData[0].longitude);
+        	let destination = new google.maps.LatLng(taskData[tLen - 1].latitude, taskData[tLen - 1].longitude);
+        	let waypoints = [];
+        	for (const subTask of taskData) {
+        		  // Check if subTask is not the first or last element (optional)
+        		  if (subTask !== taskData[0] && subTask !== taskData[taskData.length - 1]) {
+        		    waypoints.push(new google.maps.LatLng(subTask.latitude, subTask.longitude));
+        		  }
+        		}
+
+    	      service
+    	        .route({
+    	        	origin: origin,
+    	        	destination: destination,
+    	        	waypoints : waypoints,
+    	            travelMode: google.maps.TravelMode.DRIVING,
+    	            avoidTolls: true,
+    	        })
+    	        .then((result) => {
+    	          display.setDirections(result);
+    	        })
+    	    
+    	  } catch (error) {
+    	    console.error("Error fetching task data:", error);
+    	  }
+    	}
 
     function computeTotalDistance(result) {
       let total = 0;
@@ -207,7 +219,7 @@
       </div>
     </div>
     <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPGAAlGSj_XQv24J_Qo-qEFtKsUHb-5OU&callback=initMap&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOVkQCJBsUmAMIMFnaNIvP9lXOZkHLDDg&callback=initMap&v=weekly"
       defer
     ></script>
   </body>

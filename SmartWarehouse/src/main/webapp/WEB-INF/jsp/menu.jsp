@@ -32,7 +32,7 @@
                     			Delivery
                				</a>
                 			<div class="dropdown-menu" aria-labelledby="taskDropdownMenuLink">
-                    			<a class="dropdown-item" href="/Task">View All</a>
+                    			<a class="dropdown-item" href="/Task/ViewAll">View All</a>
                     			<a class="dropdown-item" href="/Task/NewTask">New Task</a>
                 			</div>
                         </li>

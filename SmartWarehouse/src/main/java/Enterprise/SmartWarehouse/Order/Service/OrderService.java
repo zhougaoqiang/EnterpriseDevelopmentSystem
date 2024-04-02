@@ -126,6 +126,16 @@ public class OrderService {
 		}
 	}
 	
+	public void updateOrderStatus(int id, EDeliveryStatus status)
+	{
+		Optional<OrderHeader> orderHeaderOpt = headerRepos.findById(id);
+        if (!orderHeaderOpt.isPresent())
+            return;
+        
+        orderHeaderOpt.get().setDeliveryStatus(status);
+        headerRepos.save(orderHeaderOpt.get());
+	}
+	
 	public boolean isExist(Integer id) {
 		return headerRepos.existsById(id);
 	}
