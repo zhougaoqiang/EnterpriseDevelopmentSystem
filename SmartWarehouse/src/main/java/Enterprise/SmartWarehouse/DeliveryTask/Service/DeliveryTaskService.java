@@ -27,6 +27,7 @@ import Enterprise.SmartWarehouse.Order.Entities.OrderHeaderSpecification;
 import Enterprise.SmartWarehouse.Order.Entities.OrderHeader.EDeliveryStatus;
 import Enterprise.SmartWarehouse.Order.Service.OrderService;
 import Enterprise.SmartWarehouse.TspAlgorithm.TspService;
+import Enterprise.SmartWarehouse.WebControllers.Model.NewTaskModel;
 
 @Service
 public class DeliveryTaskService {
@@ -39,6 +40,7 @@ public class DeliveryTaskService {
     @Autowired
     private TspService tspService;
     
+    private List<Integer> orderIds;
     final public int maxShowInOnePage = 10;
     
 	public Iterable<TaskHeader> getAllTasks(Pageable pageable){
@@ -128,5 +130,31 @@ public class DeliveryTaskService {
 	
 	public int totalPages() {
 		return (int) ((headerRepos.count() / maxShowInOnePage) + 1);
+	}
+	
+	public void updateTaskStatus(int id, EDeliveryStatus status)
+	{
+		Optional<Task> taskOpt = getTask(id);
+		if (taskOpt.isPresent())
+		{
+			taskOpt.get().getTaskHeader().setStatus(status);
+			
+			 List<SubTask> subtasks = taskOpt.get().getSubTasks();
+			 for(SubTask st : subtasks)
+			 {
+				 st.setStatus(status);
+				 orderService.updateOrderStatus(st.getOrderId(), status);
+			 }
+			 
+			 updateTask(taskOpt.get());
+		}
+	}
+
+	public void setInitSubTasks(NewTaskModel model){
+		orderIds = model.getOrderIds();
+	}
+	
+	public List<Integer> getInitSubTasks(){
+		return orderIds;
 	}
 }

@@ -32,7 +32,7 @@
 <script type="text/javascript">
 	var wTotalPages = ${totalPages};
 	var wCurrentPage = 1;
-	
+	var options = ["Pending", "InProgress", "Shipped", "Abandoned"];
 	function updatePageIndicator()
 	{
 		console.log(wTotalPages)
@@ -135,8 +135,6 @@
 	    };
 	    statusCell.appendChild(statusSelect);
 
-	    // Populate select options based on status enum (replace with your options)
-	    let options = ["Pending", "InProgress", "Shipped", "Abandoned"];
 	    for (let option of options) {
 	      let optionElement = document.createElement("option");
 	      optionElement.text = option;
@@ -150,11 +148,24 @@
 	  }
 	}
 	
-	// Function to handle user-selected status change (implement your logic)
-	function handleTaskStatusChange(taskId, newStatus) {
-		  // Update database with new status for the task with taskId
-		  // Trigger UI update or other actions as needed
-		  console.log("Task", taskId, "status changed to", newStatus); // Example placeholder
+	async function handleTaskStatusChange(taskId, newStatus) {
+		  console.log("Task", taskId, "status changed to", newStatus);
+		  
+		  try {
+			  
+			  let position = options.lastIndexOf(newStatus);
+			  	let url = "http://localhost:8080/delivery/updateStatus?id="+taskId + "&status=" + position;
+			    const response = await fetch(url);
+
+			    console.log(response);
+			    if (!response.ok) {
+			      throw new Error(`Error updating order status: ${response.statusText}`);
+			    }
+
+			    alert("Order status updated successfully!");
+			  } catch (error) {
+			    alert("Error updating order status:", error);
+			  }
 	}
 	
 	function getNeedReturnString(needReturn){

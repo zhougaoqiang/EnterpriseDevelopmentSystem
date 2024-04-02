@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import Enterprise.SmartWarehouse.TspAlgorithm.*;
+import Enterprise.SmartWarehouse.WebControllers.Model.NewTaskModel;
 
 
 @RestController
@@ -49,6 +50,13 @@ public class DeliveryTaskController {
 	public Task updateTask(@RequestBody Task task){
 		
 		return deliveryService.updateTask(task);
+	}
+	
+	@PutMapping("/init")
+	public void setInitSubTasks(@RequestBody NewTaskModel mode)
+	{
+		System.out.println("receive init orders");
+		deliveryService.setInitSubTasks(mode);
 	}
 	
 	@GetMapping("/pages")
@@ -113,5 +121,30 @@ public class DeliveryTaskController {
 	    }
 		
 		return deliveryService.getAllTasksByStatus(sts);
+	}
+	
+	@GetMapping("/updateStatus")
+	public void updateTaskStatus(@RequestParam(value = "id", required = true) Integer id, @RequestParam(value = "status", required = true) Integer status)
+	{
+	    EDeliveryStatus sts = EDeliveryStatus.Pending;
+
+        switch (status) {
+            case 0:
+                sts = EDeliveryStatus.Pending;
+                break;
+            case 1:
+                sts = EDeliveryStatus.InProgress;
+                break;
+            case 2:
+                sts = EDeliveryStatus.Shipped;
+                break;
+            case 3:
+                sts = EDeliveryStatus.Abandoned;
+                break;
+            default:
+                break;
+	    }
+        
+        deliveryService.updateTaskStatus(id, sts);
 	}
 }

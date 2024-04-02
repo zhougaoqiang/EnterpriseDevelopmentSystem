@@ -32,6 +32,7 @@
 <script type="text/javascript">
 	var wTotalPages = ${totalPages};
 	var wCurrentPage = 1;
+	var options = ["Pending", "InProgress", "Shipped", "Abandoned"];
 	
 	function updatePageIndicator()
 	{
@@ -48,7 +49,6 @@
 		fetchPages();
 		updatePageIndicator();
 	}
-
 
 	function fetchPages() {
 		let pUrl= "http://localhost:8080/orders/pages";
@@ -86,13 +86,15 @@
 	function fetchOrdersByStatus(status){
 		let pUrl= "http://localhost:8080/orders/fetch?status="+status;
 		console.log(pUrl);
+		
 		  $.ajax({
 			    url: pUrl,
 			    type: "GET", // Use GET for fetching data
 			    dataType: "json", // Expect JSON response
 			    success: function(data) {
 			    	console.log(data);
-			    	if (status == 0)
+			    	console.log("status " + status);
+			    	if (status === 0)
 			    		statusOrderTable(data, true);
 			    	else
 			    		statusOrderTable(data, false);
@@ -116,20 +118,62 @@
 		    row.insertCell().innerHTML = order.nominalPrice;
 		    row.insertCell().innerHTML = order.actualPrice;
 		    row.insertCell().innerHTML = order.datetime;
-		    row.insertCell().innerHTML = order.deliveryStatus;
+		    // row.insertCell().innerHTML = order.deliveryStatus;
+		    
+		    let statusCell = row.insertCell();
+	        let statusSelect = document.createElement("select");
+	        statusSelect.onchange = function() {
+	          // Call function to handle user-selected status change (replace with your logic)
+	           handleOrderStatusChange(order.id, this.value);
+	       };
+	       statusCell.appendChild(statusSelect);
+
+	    // Populate select options based on status enum (replace with your options)
+	    for (let option of options) {
+	      let optionElement = document.createElement("option");
+	      optionElement.text = option;
+	      optionElement.value = option; // Assuming enum values match option text
+	      if (option == order.deliveryStatus) {
+	        optionElement.selected = true; // Select the current status
+	      }
+	      statusSelect.appendChild(optionElement);
+	    }
 		    
 	        // Add a checkbox in the last cell
-	        let checkboxCell = row.insertCell();
-	        let checkbox = document.createElement('input');
-	        checkbox.type = 'checkbox';
-	        checkbox.value = order.id; // You can set the value to order.id or any other unique identifier
-	        checkboxCell.appendChild(checkbox);
+	        if (isPending)
+	        {
+		        let checkboxCell = row.insertCell();
+		        let checkbox = document.createElement('input');
+		        checkbox.type = 'checkbox';
+		        checkbox.value = order.id; // You can set the value to order.id or any other unique identifier
+		        checkboxCell.appendChild(checkbox);
+	        }
 		  }
 		  
 		  if (isPending == true)
 			  showDeliveryButton();
 		  else
 			  hideDeliveryButton();
+	}
+	
+	async function handleOrderStatusChange(orderId, newStatus) {
+		  console.log("Order id ", orderId, "status changed to", newStatus); // Example placeholder
+		  
+		  try {
+			  
+			  let position = options.lastIndexOf(newStatus);
+			  	let url = "http://localhost:8080/orders/updateStatus?id="+orderId + "&status=" + position;
+			    const response = await fetch(url);
+
+			    console.log(response);
+			    if (!response.ok) {
+			      throw new Error(`Error updating order status: ${response.statusText}`);
+			    }
+
+			    alert("Order status updated successfully!");
+			  } catch (error) {
+			    alert("Error updating order status:", error);
+			  }
 	}
 
 	function allOrderTable(orders) {
@@ -144,7 +188,26 @@
 	    row.insertCell().innerHTML = order.nominalPrice;
 	    row.insertCell().innerHTML = order.actualPrice;
 	    row.insertCell().innerHTML = order.datetime;
-	    row.insertCell().innerHTML = order.deliveryStatus;
+	    // row.insertCell().innerHTML = order.deliveryStatus;
+	    
+	    let statusCell = row.insertCell();
+	    let statusSelect = document.createElement("select");
+	    statusSelect.onchange = function() {
+	      // Call function to handle user-selected status change (replace with your logic)
+	      handleOrderStatusChange(order.id, this.value);
+	    };
+	    statusCell.appendChild(statusSelect);
+
+	    // Populate select options based on status enum (replace with your options)
+	    for (let option of options) {
+	      let optionElement = document.createElement("option");
+	      optionElement.text = option;
+	      optionElement.value = option; // Assuming enum values match option text
+	      if (option == order.deliveryStatus) {
+	        optionElement.selected = true; // Select the current status
+	      }
+	      statusSelect.appendChild(optionElement);
+	    }
 	  }
 	  hideDeliveryButton();
 	}
@@ -215,7 +278,7 @@
 		deliveryBtn.style.visibility = "visible";
 	}
 	
-	function onDelivery()
+	function onDelivery111()
 	{
 	    var tableBody = document.getElementById("allOrders").getElementsByTagName("tbody")[0];
 	    var checkboxes = tableBody.querySelectorAll('input[type="checkbox"]');
@@ -230,21 +293,47 @@
 	    console.log(selectedOrderIds);
 	    console.log(JSON.stringify({ orderIds: selectedOrderIds }));
 	    
-	    fetch('http://localhost:8080/Task/NewTask', {
-	        method: 'POST',
-	        headers: {
-	            'Content-Type': 'application/json',
-	        },
-	        body: JSON.stringify({ orderIds: selectedOrderIds })
-	    })
-	    .then(response => response.json())
-	    .then(data => {
-	        console.log('Success:', data);
-	    })
-	    .catch((error) => {
-	        console.error('Error:', error);
-	    });
+	    
 	}
+	
+	async function onDelivery() {
+		  const tableBody = document.getElementById("allOrders").getElementsByTagName("tbody")[0];
+		  const checkboxes = tableBody.querySelectorAll('input[type="checkbox"]');
+		  const selectedOrderIds = [];
+
+		  checkboxes.forEach(checkbox => {
+		    if (checkbox.checked) {
+		      selectedOrderIds.push(parseInt(checkbox.value));
+		    }
+		  });
+
+		  if (!selectedOrderIds.length) {
+		    console.warn("No orders selected!");
+		    return; // Exit if no orders selected
+		  }
+
+		  const jsonData = JSON.stringify({ orderIds: selectedOrderIds });
+		  
+		  try {
+			    const response = await fetch("/delivery/init", {
+			      method: "PUT",
+			      headers: { "Content-Type": "application/json" },
+			      body: jsonData,
+			    });
+
+			    if (!response.ok) {
+			      throw new Error(`Error sending data: ${response.statusText}`);
+			    }
+
+			    console.log("Data sent successfully");
+			    window.location.href = "/Task/NewTaskWithOrders";
+
+			  } catch (error) {
+			    console.error("Error sending order IDs:", error);
+			    // Handle errors (optional)
+			  }
+		}
+
 	
 	$(document).ready(function() {
 			viewAll();

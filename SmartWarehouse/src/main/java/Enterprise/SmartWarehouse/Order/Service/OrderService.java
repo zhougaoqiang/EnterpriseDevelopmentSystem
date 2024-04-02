@@ -128,6 +128,7 @@ public class OrderService {
 	
 	public void updateOrderStatus(int id, EDeliveryStatus status)
 	{
+		System.out.println("update order id " + id + ", status" + status);
 		Optional<OrderHeader> orderHeaderOpt = headerRepos.findById(id);
         if (!orderHeaderOpt.isPresent())
             return;

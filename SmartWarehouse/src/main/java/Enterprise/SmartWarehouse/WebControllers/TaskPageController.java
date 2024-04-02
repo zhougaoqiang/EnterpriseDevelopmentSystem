@@ -28,6 +28,8 @@ public class TaskPageController {
 	
 	@GetMapping("/Task/NewTask")
 	public String newTask(Model model) {
+    	model.addAttribute("loadRequest", false);
+    	model.addAttribute("orderIds", 0);
         return "taskcreate";
     }
 	
@@ -37,11 +39,11 @@ public class TaskPageController {
         return "tasklist";
     }
 	
-    @PostMapping("/Task/NewTask")
-    public String newTask(@RequestBody NewTaskModel newTask, Model model) {
-    	ArrayList<OrderHeader> oHs = orderService.getOrdersByIdList(newTask.getOrderIds());
-    	model.addAttribute("subTasksCount", oHs.size());
-    	model.addAttribute("orderHeaders", oHs);
+    @GetMapping("/Task/NewTaskWithOrders")
+    public String newTaskWithOrders(Model model) {
+    	System.out.println("receive newTask");
+    	model.addAttribute("loadRequest", true);
+    	model.addAttribute("orderIds", taskService.getInitSubTasks());
         return "taskcreate";
     }
     

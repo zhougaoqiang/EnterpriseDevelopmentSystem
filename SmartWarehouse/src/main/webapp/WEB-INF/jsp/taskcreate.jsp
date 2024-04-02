@@ -37,7 +37,10 @@
      var alreadyShowed;
      
      var startLocation; //lat ,lng
-     var startAddress;
+     var startAddress = "";
+     
+     var needInitOrders = ${loadRequest};
+     var initOrderIds  = ${orderIds}; 
      
      function initMap() {
         var mapOptions = {
@@ -54,8 +57,26 @@
          seqIndicator = 1;
          index = 1;
          autocomplete = new google.maps.places.Autocomplete(document.getElementById('startLocationInput'));
+         initOrders();
     }
+    
      
+    async function initOrders() {
+    	console.log(needInitOrders);
+    	if (needInitOrders == true){
+    		 for (const id of initOrderIds) {
+    			 let url = "http://localhost:8080/orders/orderheader-" + id;
+    			 await fetch(url).then(response => response.json())
+    			        .then(data => {
+    						console.log(data);
+    						let location = new google.maps.LatLng(data.latitude, data.longitude);
+    						let orderId = data.id;
+    						addOrderResponse(location, orderId.toString());
+    			        })
+    			        .catch(error => {alert("Error fetching order:", error);});
+    		 }
+    	}
+   	}
      
     	// Sets the map on all markers in the array.
     	function setMapOnAll(map) {
@@ -68,7 +89,7 @@
     	function hideMarkers() {
     	  setMapOnAll(null);
     	  
-    	  if (startAddress != null)
+    	  if (startAddress.length > 0)
    		  {
     	     	const marker = new google.maps.Marker({
     	    	    map: map,
@@ -265,12 +286,20 @@
 		deleteMarkerWholeTable();
 		document.getElementById("taskTitle").value = "";
 		showModal(true);
+		document.getElementById("startLocationInput").value = "";
+		document.getElementById("OrderIdInput").value = "";
+		startAddress = "";
 	}
    
     function sendDataToServer(){
     	  if(index < 2)
     	  {
     	    alert("Please select more locations!");
+    	    return;
+    	  }
+    	  if (startAddress.length < 1)
+    	  {
+      	    alert("NO Start Address!");
     	    return;
     	  }
 
@@ -317,7 +346,6 @@
     	  
     	  async = false;
     	  
-
     	  let header = {
     			  id: timestampInSeconds,
     			  title: title,

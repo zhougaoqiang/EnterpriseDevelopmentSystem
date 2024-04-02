@@ -39,39 +39,6 @@ public class OrderController {
 	public Iterable<OrderHeader> getAllOrders(Pageable pageable){
 		return service.getAllOrders(pageable);
 	}
-
-	/*
-	 * http://localhost:8080/orders Post
-	 * 
-	 {
-  "orderHeader": {
-    "id": 3,
-    "nominalPrice": 1000,
-    "actualPrice": 900,
-    "deliveryStatus": "Pending",
-    "datetime": "2024-03-23T10:26:00",
-    "longitude": 120.0,
-    "latitude": 30.0
-  },
-  "orderItems": [
-    {
-      "itemId": 31,
-      "price": 100,
-      "quantity": 2,
-      "symbol": "pcs",
-      "totalPrice": 200
-    },
-    {
-      "itemId": 32,
-      "price": 200,
-      "quantity": 3,
-      "symbol": "pcs",
-      "totalPrice": 600
-    }
-  ]
-}
-
-	 */
 	
 	@PostMapping
 	public Order createOrder(@RequestBody Order order)
@@ -154,5 +121,30 @@ public class OrderController {
 	    }
 		
 		return service.getAllOrdersByStatus(sts);
+	}
+	
+	@GetMapping("/updateStatus")
+	public void updateOrderStatus(@RequestParam(value = "id", required = true) Integer id, @RequestParam(value = "status", required = true) Integer status)
+	{
+	    EDeliveryStatus sts = EDeliveryStatus.Pending;
+
+        switch (status) {
+            case 0:
+                sts = EDeliveryStatus.Pending;
+                break;
+            case 1:
+                sts = EDeliveryStatus.InProgress;
+                break;
+            case 2:
+                sts = EDeliveryStatus.Shipped;
+                break;
+            case 3:
+                sts = EDeliveryStatus.Abandoned;
+                break;
+            default:
+                break;
+	    }
+        
+        service.updateOrderStatus(id, sts);
 	}
 }

@@ -149,45 +149,6 @@
     	  }
     	}
 
-    
-    async function displayRoute111(service, display) {
-    	  try {
-    		  let url = "http://localhost:8080/delivery/taskId-" + ${taskId};
-    	    const response = await fetch(url);
-    	    if (!response.ok) {
-    	      throw new Error(`Error fetching task data: ${response.statusText}`);
-    	    }
-
-    	    const taskData = await response.json();
-    	    console.log(taskData);
-    	    let tLen = taskData.length;
-    	    let origin = new google.maps.LatLng(taskData[0].latitude, taskData[0].longitude);
-        	let destination = new google.maps.LatLng(taskData[tLen - 1].latitude, taskData[tLen - 1].longitude);
-        	let waypoints = [];
-        	for (const subTask of taskData) {
-        		  // Check if subTask is not the first or last element (optional)
-        		  if (subTask !== taskData[0] && subTask !== taskData[taskData.length - 1]) {
-        		    waypoints.push(new google.maps.LatLng(subTask.latitude, subTask.longitude));
-        		  }
-        		}
-
-    	      service
-    	        .route({
-    	        	origin: origin,
-    	        	destination: destination,
-    	        	waypoints : waypoints,
-    	            travelMode: google.maps.TravelMode.DRIVING,
-    	            avoidTolls: true,
-    	        })
-    	        .then((result) => {
-    	          display.setDirections(result);
-    	        })
-    	    
-    	  } catch (error) {
-    	    console.error("Error fetching task data:", error);
-    	  }
-    	}
-
     function computeTotalDistance(result) {
       let total = 0;
       const myroute = result.routes[0];
