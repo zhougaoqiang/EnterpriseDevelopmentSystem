@@ -1,12 +1,10 @@
 package Enterprise.SmartWarehouse.Order.Repository;
-//import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import Enterprise.SmartWarehouse.Order.Entities.OrderHeader;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 
-public interface OrderHeaderRepository extends JpaRepository<OrderHeader, Integer>, JpaSpecificationExecutor<OrderHeader> 
-{
+public interface OrderHeaderRepository extends JpaRepository<OrderHeader, Integer>, JpaSpecificationExecutor<OrderHeader> {
 
 }
 

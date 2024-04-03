@@ -2,8 +2,8 @@ package Enterprise.SmartWarehouse.DeliveryTask.Entities;
 import java.util.List;
 
 public class Task {
-    private TaskHeader taskHeader;
-    private List<SubTask> subTasks;
+	private TaskHeader taskHeader;
+	private List<SubTask> subTasks;
 	public TaskHeader getTaskHeader() {
 		return taskHeader;
 	}

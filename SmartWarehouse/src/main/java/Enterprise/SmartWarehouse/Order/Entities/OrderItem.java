@@ -1,26 +1,26 @@
 package Enterprise.SmartWarehouse.Order.Entities;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "order_item")
 public class OrderItem {
-	
+
 	@Id
 	private Integer itemId;
-    
+
 	@ManyToOne
-    @JoinColumn(name = "header_id")
+	@JoinColumn(name = "header_id")
 	private OrderHeader orderHeader;
-	
+
 	private Integer price;
 	private Integer quantity;
 	private String symbol;
 	@Column(name = "total_price")
 	private Integer totalPrice;
-	
-	public OrderItem()
-	{
-		
+
+	public OrderItem() {
+
 	}
 
 	public Integer getItemId() {
@@ -76,5 +76,5 @@ public class OrderItem {
 		return "OrderItem [itemId=" + itemId + ", orderHeader=" + orderHeader + ", price=" + price + ", quantity="
 				+ quantity + ", symbol=" + symbol + ", totalPrice=" + totalPrice + "]";
 	}
-	
+
 }

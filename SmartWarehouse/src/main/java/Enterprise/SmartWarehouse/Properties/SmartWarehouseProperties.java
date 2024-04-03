@@ -1,4 +1,5 @@
 package Enterprise.SmartWarehouse.Properties;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "smart-warehouse-config")
@@ -10,7 +11,7 @@ public class SmartWarehouseProperties {
 	private final String jsAPIUrl;
 	private final int maxDMNumber;
 	private final String distanceMatixUrl;
-	
+
 	public SmartWarehouseProperties(String mapKey, String region, String language, String version, String jsAPIUrl,
 			int maxDMNumber, String distanceMatixUrl) {
 		this.mapKey = mapKey;
@@ -42,7 +43,7 @@ public class SmartWarehouseProperties {
 		return jsAPIUrl;
 	}
 
-	//get distance matrix number
+	// get distance matrix number
 	public int getMaxDMNumber() {
 		return maxDMNumber;
 	}

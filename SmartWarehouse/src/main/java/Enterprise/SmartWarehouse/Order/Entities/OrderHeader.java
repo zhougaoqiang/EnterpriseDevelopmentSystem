@@ -10,13 +10,10 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "order_header")
 public class OrderHeader {
-	public enum EDeliveryStatus{
-		Pending,
-		InProgress,
-		Shipped,
-		Abandoned,
+	public enum EDeliveryStatus {
+		Pending, InProgress, Shipped, Abandoned,
 	}
-	
+
 	@Id
 	private Integer id;
 	@Column(name = "nominal_price")
@@ -30,49 +27,63 @@ public class OrderHeader {
 	private String address;
 	private double longitude;
 	private double latitude;
-	
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	public Integer getNominalPrice() {
 		return nominalPrice;
 	}
+
 	public void setNominalPrice(Integer nominalPrice) {
 		this.nominalPrice = nominalPrice;
 	}
+
 	public Integer getActualPrice() {
 		return actualPrice;
 	}
+
 	public void setActualPrice(Integer actualPrice) {
 		this.actualPrice = actualPrice;
 	}
+
 	public EDeliveryStatus getDeliveryStatus() {
 		return deliveryStatus;
 	}
+
 	public void setDeliveryStatus(EDeliveryStatus deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
 	}
+
 	public String getDatetime() {
 		return datetime;
 	}
+
 	public void setDatetime(String datetime) {
 		this.datetime = datetime;
 	}
+
 	public double getLongitude() {
 		return longitude;
 	}
+
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
+
 	public double getLatitude() {
 		return latitude;
 	}
+
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
+
 	public OrderHeader(Integer id, Integer nominalPrice, Integer actualPrice, EDeliveryStatus deliveryStatus,
 			String datetime, String add, double longitude, double latitude) {
 		super();
@@ -86,21 +97,23 @@ public class OrderHeader {
 		this.latitude = latitude;
 	}
 
-	public OrderHeader()
-	{
-		
+	public OrderHeader() {
+
 	}
+
 	public String getAddress() {
 		return address;
 	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
 	@Override
 	public String toString() {
 		return "OrderHeader [id=" + id + ", nominalPrice=" + nominalPrice + ", actualPrice=" + actualPrice
 				+ ", deliveryStatus=" + deliveryStatus + ", datetime=" + datetime + ", address=" + address
 				+ ", longitude=" + longitude + ", latitude=" + latitude + "]";
 	}
-	
+
 }

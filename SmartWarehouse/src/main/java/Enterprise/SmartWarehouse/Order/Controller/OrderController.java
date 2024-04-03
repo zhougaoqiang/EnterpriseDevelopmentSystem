@@ -103,7 +103,7 @@ public class OrderController {
 
         switch (status) {
             case 0:
-                sts = EDeliveryStatus.Pending;
+				sts = EDeliveryStatus.Pending;
                 break;
             case 1:
                 sts = EDeliveryStatus.InProgress;

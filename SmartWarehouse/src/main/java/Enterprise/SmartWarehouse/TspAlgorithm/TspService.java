@@ -29,7 +29,7 @@ public class TspService  extends TspAlgorithm
         m_decision = TspDecision.Auto;
     }
     
-    public Task directStart(Task info, boolean needBack, TspDecision decision)
+	public Task directStart(Task info, boolean needBack, TspDecision decision)
     {
 		m_needBack = needBack;
         m_runByThread = false;

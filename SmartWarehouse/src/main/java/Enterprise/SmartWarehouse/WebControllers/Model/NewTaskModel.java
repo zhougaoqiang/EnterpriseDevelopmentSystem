@@ -3,7 +3,7 @@ package Enterprise.SmartWarehouse.WebControllers.Model;
 import java.util.List;
 
 public class NewTaskModel {
-    private List<Integer> orderIds;
+	private List<Integer> orderIds;
 
 	public List<Integer> getOrderIds() {
 		return orderIds;

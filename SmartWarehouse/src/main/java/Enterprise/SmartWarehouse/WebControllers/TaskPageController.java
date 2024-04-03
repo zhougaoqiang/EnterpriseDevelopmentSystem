@@ -25,33 +25,33 @@ public class TaskPageController {
 	OrderService orderService;
 	@Autowired
 	DeliveryTaskService taskService;
-	
+
 	@GetMapping("/Task/NewTask")
 	public String newTask(Model model) {
-    	model.addAttribute("loadRequest", false);
-    	model.addAttribute("orderIds", 0);
-        return "taskcreate";
-    }
-	
+		model.addAttribute("loadRequest", false);
+		model.addAttribute("orderIds", 0);
+		return "taskcreate";
+	}
+
 	@GetMapping("/Task/ViewAll")
 	public String viewAll(Model model) {
 		model.addAttribute("totalPages", taskService.totalPages());
-        return "tasklist";
-    }
-	
-    @GetMapping("/Task/NewTaskWithOrders")
-    public String newTaskWithOrders(Model model) {
-    	System.out.println("receive newTask");
-    	model.addAttribute("loadRequest", true);
-    	model.addAttribute("orderIds", taskService.getInitSubTasks());
-        return "taskcreate";
-    }
-    
-    @GetMapping("Task/MapView")
-    public String mapView(Model model, @RequestParam(value = "id", required = true) Integer id) {
-    	System.out.println("receive id = " + id);
-    	model.addAttribute("taskId", id);
-    	return "mapview";
-    }
-    
+		return "tasklist";
+	}
+
+	@GetMapping("/Task/NewTaskWithOrders")
+	public String newTaskWithOrders(Model model) {
+		System.out.println("receive newTask");
+		model.addAttribute("loadRequest", true);
+		model.addAttribute("orderIds", taskService.getInitSubTasks());
+		return "taskcreate";
+	}
+
+	@GetMapping("Task/MapView")
+	public String mapView(Model model, @RequestParam(value = "id", required = true) Integer id) {
+		System.out.println("receive id = " + id);
+		model.addAttribute("taskId", id);
+		return "mapview";
+	}
+
 }

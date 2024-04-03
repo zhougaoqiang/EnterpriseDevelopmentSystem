@@ -41,7 +41,6 @@
                         <li class="nav-item active">
                              <a class="nav-link" href="#">
                              <strong>
-                             ACCOUT
                              </strong>
                              <span class="sr-only">(current)MA</span></a>
                         </li>

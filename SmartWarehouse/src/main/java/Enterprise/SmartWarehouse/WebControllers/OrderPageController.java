@@ -23,7 +23,7 @@ public class OrderPageController {
     
     @GetMapping("/Order/ViewAll")
     public String viewallorder(Model model) {
-    	model.addAttribute("totalPages", service.totalPages());
+		model.addAttribute("totalPages", service.totalPages());
         return "orderviewall";  // here return warehouse.jsp
     }
     

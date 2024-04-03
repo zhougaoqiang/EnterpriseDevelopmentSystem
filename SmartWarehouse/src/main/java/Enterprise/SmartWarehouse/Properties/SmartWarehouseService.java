@@ -1,14 +1,15 @@
 package Enterprise.SmartWarehouse.Properties;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public class SmartWarehouseService {
-    private final SmartWarehouseProperties properties;
+	private final SmartWarehouseProperties properties;
 
-    public SmartWarehouseService(SmartWarehouseProperties properties) {
-        this.properties = properties;
-    }
-    
+	public SmartWarehouseService(SmartWarehouseProperties properties) {
+		this.properties = properties;
+	}
+
 	public String getMapKey() {
 		return properties.getMapKey();
 	}
@@ -29,7 +30,7 @@ public class SmartWarehouseService {
 		return properties.getJsAPIUrl();
 	}
 
-	//get distance matrix number
+	// get distance matrix number
 	public int getMaxDMNumber() {
 		return properties.getMaxDMNumber();
 	}
@@ -37,14 +38,13 @@ public class SmartWarehouseService {
 	public String getDistanceMatixUrl() {
 		return properties.getDistanceMatixUrl();
 	}
-	
-    public String getUrl() 
-    {
-        String url = getJsAPIUrl();
-        url +=("v=" + getVersion() + "&");
-        url +=("key=" + getMapKey() + "&");
-        url +=("region=" + getRegion() + "&");
-        url +=("language=" + getLanguage());
-        return url;
-    }
+
+	public String getUrl() {
+		String url = getJsAPIUrl();
+		url += ("v=" + getVersion() + "&");
+		url += ("key=" + getMapKey() + "&");
+		url += ("region=" + getRegion() + "&");
+		url += ("language=" + getLanguage());
+		return url;
+	}
 }

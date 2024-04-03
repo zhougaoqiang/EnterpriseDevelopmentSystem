@@ -1,4 +1,5 @@
 package Enterprise.SmartWarehouse.Product.Controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,46 +23,37 @@ import java.util.List;
 public class ProductController {
 	@Autowired
 	ProductService service;
-	
+
 	@GetMapping // products?page=0&size=10
-	public Page<Product> getAllProducts(Pageable pageable){
-        return service.findAll(pageable);
+	public Page<Product> getAllProducts(Pageable pageable) {
+		return service.findAll(pageable);
 	}
 
 	@PostMapping("/stockin")
-	public boolean stockIn(@RequestBody List<Product> products)
-	{
+	public boolean stockIn(@RequestBody List<Product> products) {
 		return service.stockIn(products);
 	}
-	
+
 	@PostMapping
-	public Product createProduct(@RequestBody Product product)
-	{
-		//post http://localhost:8080/products
+	public Product createProduct(@RequestBody Product product) {
+		// post http://localhost:8080/products
 		/*
 		 * 
-{
-    "id":2,
-    "name":"Pineapple",
-    "type":"Weight",
-    "price": 100,
-    "quantity": 100000,
-    "symbol":"g"
-}
+		 * { "id":2, "name":"Pineapple", "type":"Weight", "price": 100, "quantity":
+		 * 100000, "symbol":"g" }
 		 */
 		return service.createProduct(product);
 	}
 
 	@DeleteMapping
-	public void deleteProduct(@RequestBody Product product)
-	{
+	public void deleteProduct(@RequestBody Product product) {
 		System.out.println("receive delete product");
 		System.out.println(product.getId());
 		service.deleteProduct(product);
 	}
-	
+
 	@PutMapping
-	public Product updateProduct(@RequestBody Product product){
+	public Product updateProduct(@RequestBody Product product) {
 		return service.updateProduct(product);
 	}
 
@@ -71,20 +63,20 @@ public class ProductController {
 		System.out.println(id);
 		return service.getProduct(id);
 	}
-	
+
 	@GetMapping("/exist-{id}")
 	public boolean isExist(@PathVariable("id") Integer id) {
 		System.out.println(id);
 		return service.isExist(id);
 	}
-	
+
 	@GetMapping("/count")
-	public long count(){
+	public long count() {
 		return service.count();
 	}
-	
+
 	@GetMapping("/pages")
-	public long pages(){
+	public long pages() {
 		return service.totalPages();
 	}
 }

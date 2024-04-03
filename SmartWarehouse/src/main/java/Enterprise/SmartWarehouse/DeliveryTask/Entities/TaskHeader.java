@@ -44,6 +44,7 @@ public class TaskHeader {
 	public void setStatus(EDeliveryStatus status) {
 		this.status = status;
 	}
+
 	public TspDecision getDecision() {
 		return decision;
 	}
