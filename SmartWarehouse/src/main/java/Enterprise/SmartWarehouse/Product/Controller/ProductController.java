@@ -58,10 +58,10 @@ public class ProductController {
 	}
 
 	@GetMapping("/get-{id}")
-	public ResponseEntity<Product> getProduct(@PathVariable("id") Integer id) {
+	public ResponseEntity<Product> getProductEntity(@PathVariable("id") Integer id) {
 		System.out.println("receive get-{id}");
 		System.out.println(id);
-		return service.getProduct(id);
+		return service.getProductEntity(id);
 	}
 
 	@GetMapping("/exist-{id}")

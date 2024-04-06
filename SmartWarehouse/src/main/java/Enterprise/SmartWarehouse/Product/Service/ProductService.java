@@ -56,13 +56,23 @@ public class ProductService {
 		return productRepos.save(product);
 	}
 
-	public ResponseEntity<Product> getProduct(Integer id) {
+	public ResponseEntity<Product> getProductEntity(Integer id) {
 	    Optional<Product> productOpt = productRepos.findById(id);
 	    if (productOpt.isPresent()) {
 	        return ResponseEntity.ok(productOpt.get()); //返回 HTTP 状态码 200（OK）和产品数据
 	    } else {
 	        return ResponseEntity.notFound().build(); //返回 HTTP 状态码 404（Not Found
 	    }
+	}
+	
+	public Product getProduct(Integer id) {
+		Optional<Product> productOpt = productRepos.findById(id);
+		if (productOpt.isPresent())
+		{
+			return productOpt.get();
+		}
+		Product prod = null;
+		return prod;
 	}
 	
 	public boolean isExist(Integer id) {

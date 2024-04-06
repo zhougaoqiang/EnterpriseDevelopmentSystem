@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,23 +41,52 @@ public class OrderController {
 		return service.getAllOrders(pageable);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@PostMapping
-	public Order createOrder(@RequestBody Order order)
+	public ResponseEntity<Order> createOrder(@RequestBody Order order)
 	{
 		System.out.println("Create order => " + order.toString());
-		return service.createOrder(order);
+		
+		List<OrderItem> orderItemList = order.getOrderItems();
+		List<Product> productList = new ArrayList<>();
+		for(OrderItem item : orderItemList)
+		{
+			Product prod = productService.getProduct(item.getItemId());
+			if (prod == null)
+				return (ResponseEntity<Order>) ResponseEntity.unprocessableEntity();
+			
+			int quantity = prod.getQuantity() - item.getQuantity();
+			if (quantity > 0)
+			{
+				prod.setQuantity(quantity);
+				productList.add(prod);
+			}
+			else
+			{
+				return (ResponseEntity<Order>) ResponseEntity.unprocessableEntity();
+			}
+
+		}
+		
+		for(Product prod : productList)
+		{
+			productService.updateProduct(prod);
+		}
+		
+		Order newOrder = service.createOrder(order);
+		return ResponseEntity.ok(newOrder);
 	}
 	
-	@PutMapping
-	public Order updateOrder(@RequestBody Order order)
-	{
-		return service.updateOrder(order);
-	}
+//	@PutMapping
+//	public Order updateOrder(@RequestBody Order order)
+//	{
+//		return service.updateOrder(order);
+//	}
 	
 	@GetMapping("/product-{id}")
 	public ResponseEntity<Product> getProduct(@PathVariable("id") Integer id)
 	{
-		return productService.getProduct(id);
+		return productService.getProductEntity(id);
 	}
 
 	@GetMapping("/{id}")

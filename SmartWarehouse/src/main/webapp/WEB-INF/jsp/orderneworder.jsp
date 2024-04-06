@@ -141,9 +141,9 @@ function submitNewOrder()
 	  })
 	  .then(response => {
 	    if (response.ok) {
-	      console.log("Stock updated successfully");
+	      console.log("Order created successfully");
 	      $('#successModal').modal('show'); 
-	      $('#successMessage').text("Stock updated successfully");
+	      $('#successMessage').text("Order created successfully");
 	      // if ok, clear table
 	       tableBody.innerHTML="";
 	       document.getElementById("totalPriceInput").value = 0;
@@ -151,9 +151,9 @@ function submitNewOrder()
 	       document.getElementById("addressInput").value = 0;
 	       regenerateOrderId();
 	    } else {
-	      console.error("Error updating stock:", response.statusText);
+	      console.error("Order Create Fail", response.statusText);
 	      $('#errorModal').modal('show');
-	      $('#errorMessage').text(response.statusText);
+	      $('#errorMessage').text('Order Create Fail');
 	    }
 	  })
 	  .catch(error => {
@@ -287,19 +287,26 @@ addRowBtn.addEventListener("click", function() {
           } else {
             cell2.innerHTML = '<input type="text" class="form-control" value="Product not found" readonly>';
           }
-         console.log(data.price)
+         console.log(data.price);
          if (data.price) {
              cell3.innerHTML = '<input type="text" class="form-control" value="' + data.price + '" readonly>';
            } else {
              cell3.innerHTML = '<input type="text" class="form-control" value="Product not found" readonly>';
            }
-         console.log("data.symbol")
-         console.log(data.symbol)
+         console.log("data.symbol");
+         console.log(data.symbol);
          if (data.symbol) {
              cell4.innerHTML = '<input type="text" class="form-control" value="' + data.symbol + '" readonly>';
            } else {
              cell4.innerHTML = '<input type="text" class="form-control" value="Product not found" readonly>';
            }
+/*          console.log(data.quantity); //12
+         if (data.quantity) {
+             cell5.innerHTML = '<input type="number" class="form-control" value="0" min="0" max="' + data.quantity +'">';
+           } else {
+             cell5.innerHTML = '<input type="text" class="form-control" value="Product not found" readonly>';
+           } */
+         
         })
         .catch(error => {
           console.error("Error fetching product name:", error);
