@@ -38,6 +38,7 @@
      
      var startLocation; //lat ,lng
      var startAddress = "";
+     var startMaker;
      
      var needInitOrders = ${loadRequest};
      var initOrderIds  = ${orderIds}; 
@@ -83,20 +84,12 @@
     	  for (let i = 0; i < markers.length; i++) {
     	    markers[i].setMap(map);
     	  }
+    	  startMaker.setMap(map);
     	}
     	
     	// Removes the markers from the map, but keeps them in the array.
     	function hideMarkers() {
     	  setMapOnAll(null);
-    	  
-    	  if (startAddress.length > 0)
-   		  {
-    	     	const marker = new google.maps.Marker({
-    	    	    map: map,
-    	    	    position: startLocation,
-    	    	    title: startAddress
-    	    	  });
-    	   }
     	}
 
     	// Shows any markers currently in the array.
@@ -243,7 +236,7 @@
                 startLocation = result[0].geometry.location;
                 startAddress = address;
                 
-            	const marker = new google.maps.Marker({
+                startMaker = new google.maps.Marker({
             	    map: map,
             	    position: startLocation,
             	    title: startAddress
@@ -285,10 +278,10 @@
 	{
 		deleteMarkerWholeTable();
 		document.getElementById("taskTitle").value = "";
-		showModal(true);
 		document.getElementById("startLocationInput").value = "";
 		document.getElementById("OrderIdInput").value = "";
 		startAddress = "";
+		showModal(true);
 	}
    
     function sendDataToServer(){

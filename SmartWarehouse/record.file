@@ -1,0 +1,9 @@
+docker login
+docker build -t smartwarehouse .
+docker push zhougaoqiang/smartwarehouse:tagname
+
+docker network create SmartWarehouse
+
+docker run --detach --env MYSQL_ROOT_PASSWORD=OKOKOK --env MYSQL_DATABASE=smartwarehouse --name mysql --publish 3306:3306 --network=SmartWarehouse mysql:latest
+
+docker-compose up

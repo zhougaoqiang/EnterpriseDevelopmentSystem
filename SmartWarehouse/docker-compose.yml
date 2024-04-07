@@ -1,0 +1,36 @@
+version: '3.7'
+services:
+  todo-web-application:
+    image: zhougaoqiang/smartwarehouse:1.0.0
+    #build:
+      #context: .
+      #dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on: # Start the depends_on first
+      - mysql 
+    environment:
+      RDS_HOSTNAME: mysql
+      RDS_PORT: 3306
+      RDS_DB_NAME: smartwarehouse
+      RDS_USERNAME: root
+      RDS_PASSWORD: OKOKOK
+    networks:
+      - SmartWarehouse
+
+  mysql:
+    image: mysql:8.3.0
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: OKOKOK 
+      MYSQL_DATABASE: smartwarehouse
+    volumes:
+      - ./mysql-dumps:/docker-entrypoint-initdb.d
+    networks:
+      - SmartWarehouse
+
+networks:
+  SmartWarehouse:

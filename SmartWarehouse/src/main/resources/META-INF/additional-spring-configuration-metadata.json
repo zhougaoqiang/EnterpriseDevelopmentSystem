@@ -33,5 +33,15 @@
     "name": "SmartWarehouseConfig.max-d-m-number",
     "type": "java.lang.String",
     "description": "A description for 'SmartWarehouseConfig.max-d-m-number'"
+  },
+  {
+    "name": "management.endpoints.web.base-path",
+    "type": "java.lang.String",
+    "description": "A description for 'management.endpoints.web.base-path'"
+  },
+  {
+    "name": "management.endpoints.web.exposure.include",
+    "type": "java.lang.String",
+    "description": "A description for 'management.endpoints.web.exposure.include'"
   }
 ]}

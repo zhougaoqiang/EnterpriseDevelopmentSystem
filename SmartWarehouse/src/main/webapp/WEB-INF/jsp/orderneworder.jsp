@@ -55,6 +55,7 @@ function regenerateOrderId() {
 	    type: "GET", // Use GET for fetching data
 	    success: function(data) {
 	    	console.log(data);
+	    	orderID = data;
 	    	document.getElementById("newOrderID").innerHTML = "New Order : " + data;
 	    },
 	    error: function(jqXHR, textStatus, errorThrown) {
@@ -62,106 +63,149 @@ function regenerateOrderId() {
 	    }
 	  });
 	}
+
+function submitCheck()
+{	
+	let tp = parseInt(document.getElementById("totalPriceInput").value);
+	if (tp == 0)
+	{
+  	  $('#errorModal').modal('show');
+	  $('#errorMessage').text("Nominal price should not zero");
+	  return false;
+	}
 	
-function submitNewOrder()
-{
-	console.log("call submit new order");
-	let tableBody = document.getElementById("newOrderTable").getElementsByTagName("tbody")[0];
-	let itemList = []; // Array to store product data
-
-	  // Loop through all rows in the table body
-	  for (let i = 0; i < tableBody.rows.length; i++)
-	  {
-	    let row = tableBody.rows[i];
-	    let cells = row.cells;
-
-	    // Extract data from each cell, assuming the ID is in the first cell, name in the second, and quantity in the third
-	    let id = cells[0].querySelector('input').value; // Assuming input fields are within cells
-	    let name = cells[1].querySelector('input').value;
-	    let price = cells[2].querySelector('input').value;
-	    let symbol = cells[3].querySelector('input').value;
-	    let quantity = cells[4].querySelector('input').value;
-	    let totalPrice = cells[5].querySelector('input').value;
-	    
-	    if(name == "Product not found" || name == "Error fetching name")
-	    	continue;
-	    
-	    if (isNaN(quantity) || typeof quantity === "undefined")
-	    {
-	    	  $('#errorModal').modal('show');
-	    	  $('#errorMessage').text("Invalid quantity. Please enter a number.");
-	    	  return;
-	    }
-	    if (isNaN(totalPrice) || typeof quantity === "undefined" || totalPrice == 0)
-	    {
-	    	  $('#errorModal').modal('show');
-	    	  $('#errorMessage').text("Invalid total price. Please check");
-	    	  return;
-	    }
-	    // Create a product object with extracted data
-	    let item = {
-	      itemId:parseInt(id),
-	      price: parseInt(price),
-	      quantity: parseInt(quantity),
-	      symbol: symbol,
-	   	  totalPrice: parseInt(totalPrice)
-	    };
-
-	    // Add the product object to the list
-	    itemList.push(item);
-	  }
-
-	let np = parseInt(document.getElementById("totalPriceInput").value);
 	let ap = parseInt(document.getElementById("actualPriceInput").value);
-	const now = new Date();
-	let orderHeader = {
-			id: parseInt(orderID), 
-			nominalPrice: np,
-			actualPrice: ap,
-			deliveryStatus: "Pending",
-			datetime: now.toISOString(),
-			address: document.getElementById('addressInput').value,
-			longitude: currentLocation.lng,
-			latitude: currentLocation.lat
+	if (ap == 0)
+	{
+  	  $('#errorModal').modal('show');
+	  $('#errorMessage').text("Actual price should not zero");
+	  return false;
 	}
 	
-	let order = {
-		orderHeader: orderHeader,
-		orderItems: itemList
+	let addressInput = document.getElementById("totalPriceInput").value;
+	if (addressInput.length == 0)
+	{
+	 $('#errorModal').modal('show');
+	 $('#errorMessage').text("Invalid Address");
+	 return false;
 	}
-
-	console.log(JSON.stringify(order));
-	  // Send the product list to the server for update (replace with your actual server-side logic)
-	  fetch('http://localhost:8080/orders', {
-	    method: 'POST', // Specify POST for updates
-	    headers: {
-	      'Content-Type': 'application/json' // Set content type for JSON data
-	    },
-	    body: JSON.stringify(order) // Convert product list to JSON string
-	  })
-	  .then(response => {
-	    if (response.ok) {
-	      console.log("Order created successfully");
-	      $('#successModal').modal('show'); 
-	      $('#successMessage').text("Order created successfully");
-	      // if ok, clear table
-	       tableBody.innerHTML="";
-	       document.getElementById("totalPriceInput").value = 0;
-	       document.getElementById("actualPriceInput").value = 0;
-	       document.getElementById("addressInput").value = 0;
-	       regenerateOrderId();
-	    } else {
-	      console.error("Order Create Fail", response.statusText);
-	      $('#errorModal').modal('show');
-	      $('#errorMessage').text('Order Create Fail');
-	    }
-	  })
-	  .catch(error => {
-	    console.error("Error sending request:", error);
-	      $('#errorModal').modal('show');
-	      $('#errorMessage').text(error);
-	  });
+		
+	return true;
+	
 }
+
+function submitNewOrder() {
+    console.log("call submit new order");
+
+    if (!submitCheck()) return false;
+
+    let tableBody = document.getElementById("newOrderTable").getElementsByTagName("tbody")[0];
+    let itemList = []; // Array to store product data
+
+    // Validate all rows first
+    for (let i = 0; i < tableBody.rows.length; i++) {
+        let row = tableBody.rows[i];
+        let cells = row.cells;
+
+        let id = cells[0].querySelector('input').value;
+        let quantity = cells[4].querySelector('input').value;
+        let totalPrice = cells[5].querySelector('input').value;
+
+        // Validation logic
+        if (!id || isNaN(id)) {
+            $('#errorModal').modal('show');
+            $('#errorMessage').text("Invalid id. Please enter a number.");
+            return; // Stop execution
+        }
+
+        if (isNaN(quantity) || quantity == 0) {
+            $('#errorModal').modal('show');
+            $('#errorMessage').text("Invalid quantity. Please enter a number.");
+            return; // Stop execution
+        }
+
+        if (isNaN(totalPrice) || totalPrice == 0) {
+            $('#errorModal').modal('show');
+            $('#errorMessage').text("Invalid price. Please check.");
+            return; // Stop execution
+        }
+    }
+
+    // If all rows are valid, extract the data
+    for (let i = 0; i < tableBody.rows.length; i++) {
+        let row = tableBody.rows[i];
+        let cells = row.cells;
+
+        let id = cells[0].querySelector('input').value;
+        let name = cells[1].querySelector('input').value;
+        let price = cells[2].querySelector('input').value;
+        let symbol = cells[3].querySelector('input').value;
+        let quantity = cells[4].querySelector('input').value;
+        let totalPrice = cells[5].querySelector('input').value;
+
+        let item = {
+            itemId: parseInt(id),
+            price: parseInt(price),
+            quantity: parseInt(quantity),
+            symbol: symbol,
+            totalPrice: parseInt(totalPrice)
+        };
+
+        itemList.push(item);
+    }
+
+    let np = parseInt(document.getElementById("totalPriceInput").value);
+    let ap = parseInt(document.getElementById("actualPriceInput").value);
+    const now = new Date();
+
+    let orderHeader = {
+        id: parseInt(orderID),
+        nominalPrice: np,
+        actualPrice: ap,
+        deliveryStatus: "Pending",
+        datetime: now.toISOString(),
+        address: document.getElementById('addressInput').value,
+        longitude: currentLocation.lng,
+        latitude: currentLocation.lat
+    }
+
+    let order = {
+        orderHeader: orderHeader,
+        orderItems: itemList
+    }
+
+    console.log(JSON.stringify(order));
+
+    fetch('http://localhost:8080/orders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(order)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Order created successfully");
+            $('#successModal').modal('show');
+            $('#successMessage').text("Order created successfully");
+            tableBody.innerHTML = "";
+            document.getElementById("totalPriceInput").value = "";
+            document.getElementById("actualPriceInput").value = "";
+            document.getElementById("addressInput").value = "";
+            regenerateOrderId();
+        } else {
+            console.error("Order Create Fail", response.statusText);
+            $('#errorModal').modal('show');
+            $('#errorMessage').text('Order Create Fail');
+        }
+    })
+    .catch(error => {
+        console.error("Error sending request:", error);
+        $('#errorModal').modal('show');
+        $('#errorMessage').text(error);
+    });
+}
+
 
 google.maps.event.addDomListener(window, 'load', initAutocomplete);
 </script>
@@ -189,7 +233,7 @@ google.maps.event.addDomListener(window, 'load', initAutocomplete);
         <label for="actualPriceInput">Actual Price ($):</label>
         <input type="number" class="form-control" id="actualPriceInput" value="0" min="0">
       </div>
-      <button type="submit" class="btn btn-primary mb-2" onclick="submitNewOrder(); event.preventDefault();">Submit</button>
+      <button type="submit" class="btn btn-primary mb-2" onclick="submitNewOrder();event.preventDefault();">Submit</button>
     </form>
 	
 	<table class="table table-striped mt-2">

@@ -9,8 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>Enterprise</groupId>
-	<artifactId>SmartWarehouse</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>smartwarehouse</artifactId>
+	<version>0.0.1-snapshot</version>
+	<packaging>war</packaging>
 	<name>SmartWarehouse</name>
 	<description>Smart Warehouse</description>
 	<properties>
@@ -76,6 +77,12 @@
     		<artifactId>json</artifactId>
     		<version>20210307</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -86,5 +93,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

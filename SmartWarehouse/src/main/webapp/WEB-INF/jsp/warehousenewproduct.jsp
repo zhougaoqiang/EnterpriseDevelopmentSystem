@@ -84,6 +84,14 @@
 		    data: JSON.stringify(productData),
 		    contentType: "application/json; charset=utf-8",
 		    success: function(response) {
+		    	
+				  document.getElementById("id").value = "";
+				  document.getElementById("name").value= "";
+				  document.getElementById("type").value= "";
+				  document.getElementById("price").value= "";
+				  document.getElementById("quantity").value= "";
+				  document.getElementById("symbol").value= "";
+		    	
 		      $('#successModal').modal('show'); 
 		      $('#successMessage').text("Create product success");
 		    },
