@@ -1,5 +1,5 @@
 docker login
-docker build -t smartwarehouse .
+docker build -t smartwarehouse:1.0.1 .
 docker push zhougaoqiang/smartwarehouse:tagname
 
 docker network create SmartWarehouse

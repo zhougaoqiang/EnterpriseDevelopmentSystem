@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   todo-web-application:
-    image: zhougaoqiang/smartwarehouse:1.0.0
+    image: zhougaoqiang/smartwarehouse:1.0.2
     #build:
       #context: .
       #dockerfile: Dockerfile
