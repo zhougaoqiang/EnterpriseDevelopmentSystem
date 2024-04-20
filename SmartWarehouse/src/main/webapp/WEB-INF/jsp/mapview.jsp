@@ -67,9 +67,8 @@
     function printPanel()
     {
         html2canvas(document.getElementById("panel")).then(function (canvas) {
-        	console.log(filename);
             var anchorTag = document.createElement("a");
-            anchorTag.download = filename;
+            anchorTag.download = taskId + ".png";
             anchorTag.href = canvas.toDataURL();
             anchorTag.target = '_blank';
             anchorTag.click();
